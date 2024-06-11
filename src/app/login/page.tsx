@@ -12,6 +12,7 @@ import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import withPublic from '../../hoc/withPublic';
+import { APP_ACTION, useAppContext } from '../../context';
 
 const defaultValues = {
   password: '',
@@ -27,6 +28,7 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter();
+  const { dispatch, state } = useAppContext();
 
   const {
     control,
@@ -55,7 +57,11 @@ const LoginPage: React.FC = () => {
       });
 
       if (response.status < 400) {
-        router.push('/dashboard');
+        response.json().then((data) => {
+          dispatch({ type: APP_ACTION.SET_USER, payload: data });
+          dispatch({ type: APP_ACTION.SET_IS_AUTHENTICATED, payload: true });
+          router.push('/dashboard');
+        });
       }
     } catch (error) {
       console.log("🚀 ~ handleLogin ~ error:", error)
@@ -70,7 +76,7 @@ const LoginPage: React.FC = () => {
       <Container maxWidth="sm">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
           <Typography variant="h4" component="h1" gutterBottom>
-            Login
+            Login {state.isAuthenticated ? 'true' : 'false'}
           </Typography>
           <form onSubmit={handleSubmit(handleLogin)} style={{ width: '100%' }}>
             <FormControl fullWidth sx={{ mb: 4 }}>

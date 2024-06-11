@@ -3,18 +3,27 @@
 
 import { ReactNode } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Avatar, AppBar, Toolbar, Typography, Box, CssBaseline, IconButton } from '@mui/material';
-import { Dashboard, People, LocationOn, Category, RoomService, Group, Apartment, Settings,Inventory } from '@mui/icons-material';
+import { Dashboard, People, LocationOn, Category, RoomService, Group, Apartment, Logout, Inventory } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import Layout from '../app/layout';
+import { APP_ACTION, useAppContext } from '../context';
 
 const drawerWidth = 240;
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+  const { dispatch } = useAppContext();
 
   const handleNavigation = (path: string) => {
     router.push(path);
   };
+
+  const handleLogout = () => {
+    // Add your logout logic here
+    dispatch({ type: APP_ACTION.SET_IS_AUTHENTICATED, payload: false });
+    dispatch({ type: APP_ACTION.SET_USER, payload: null })
+    router.push('/login');
+  }
 
   return (
     // <Layout>
@@ -38,8 +47,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             <IconButton color="inherit">
               <Avatar>SA</Avatar>
             </IconButton>
-            <IconButton color="inherit" onClick={() => handleNavigation('/settings')}>
-              <Settings />
+            <IconButton color="inherit" onClick={() => handleLogout()}>
+              <Logout />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -118,7 +127,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
           {children}
         </Box>
       </Box>
-
     // </Layout>
   );
 };

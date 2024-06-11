@@ -5,7 +5,9 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import { Box, Button, Typography } from '@mui/material';
 import DashboardLayout from '../../layouts/DashboardLayout';
-import Auth from '../../hoc/withAuth';
+
+import { useAppContext } from '../../context';
+import withAuth from '../../hoc/withAuth';
 
 const rows = [
   { id: 1, name: 'Europe', status: 'Active' },
@@ -28,6 +30,9 @@ const columns = [
 ];
 
 const DashboardPage = () => {
+  const { state } = useAppContext();
+  console.log("🚀 ~ DashboardPage ~ state:", state.user)
+  
   return (
     <DashboardLayout>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -43,4 +48,4 @@ const DashboardPage = () => {
   );
 };
 
-export default Auth(DashboardPage);
+export default withAuth(DashboardPage);
