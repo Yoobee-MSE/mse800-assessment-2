@@ -3,6 +3,7 @@
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '../configs/theme';
+import { AppProvider } from '../context';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -13,10 +14,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <title>Inventory Management System</title>
       </head>
       <body>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {children}
-        </ThemeProvider>
+        <AppProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
+        </AppProvider>
       </body>
     </html>
   );
