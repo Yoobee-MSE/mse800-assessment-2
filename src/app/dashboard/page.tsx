@@ -5,6 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import { Box, Button, Typography } from '@mui/material';
 import DashboardLayout from '../../layouts/DashboardLayout';
+import Auth from '../../hoc/withAuth';
 
 const rows = [
   { id: 1, name: 'Europe', status: 'Active' },
@@ -42,4 +43,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default Auth(DashboardPage);

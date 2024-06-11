@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, FormControl, FormHelperText, InputLabel, OutlinedInput, InputAdornment, IconButton, Icon } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import RootLayout from '../layout';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
@@ -12,6 +11,7 @@ import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import withPublic from '../../hoc/withPublic';
 
 const defaultValues = {
   password: '',
@@ -66,7 +66,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <RootLayout>
+    // <RootLayout>
       <Container maxWidth="sm">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
           <Typography variant="h4" component="h1" gutterBottom>
@@ -138,8 +138,8 @@ const LoginPage: React.FC = () => {
           </form>
         </Box>
       </Container>
-    </RootLayout>
+    // </RootLayout>
   );
 };
 
-export default LoginPage;
+export default withPublic(LoginPage);
