@@ -5,12 +5,10 @@ import { User } from '@prisma/client';
 
 
 export async function POST(request: Request) {
-  console.log("🚀 ~ POST ~ request:", request)
   try {
     const { email, password } = await request.json();
     const result = await getUserByEmail(email) as User;
-    console.log("🚀 ~ POST ~ result:", result)
-
+    
     if (!result) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }

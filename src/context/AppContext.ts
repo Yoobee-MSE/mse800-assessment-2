@@ -14,23 +14,27 @@ export const APP_ACTION = {
 const reducer = (state: typeof initialState, action: { type: string; payload: any }) => {
   switch (action.type) {
     case APP_ACTION.SET_IS_AUTHENTICATED:
-      return { ...state, isAuthenticated: action.payload };
+      return { ...state, search: action.payload };
     default:
       return state;
   }
 };
 
 // Create context
-const AppContext = createContext({
+const AppContext = createContext<{
+  state: typeof initialState;
+  appDispatch: React.Dispatch<{ type: string; payload: any }>;
+}>({
   state: initialState,
-  dispatch: () => ({}),
+  appDispatch: () => null,
 });
 
 // Provider component
-const AppProvider = ({ children }: { children: ReactNode }) => {
+const AppProvider = ({ children }) => {
   const [state, appDispatch] = useReducer(reducer, initialState);
-
-  return <AppContext.Provider></AppContext.Provider>
+  return (
+    AppContext.Provider
+  )
 };
 
 // Custom hook to use the AppContext

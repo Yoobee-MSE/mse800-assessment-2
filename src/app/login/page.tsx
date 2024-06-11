@@ -55,7 +55,7 @@ const LoginPage: React.FC = () => {
       });
 
       if (response.status < 400) {
-        // router.push('/dashboard');
+        router.push('/dashboard');
       }
     } catch (error) {
       console.log("🚀 ~ handleLogin ~ error:", error)
