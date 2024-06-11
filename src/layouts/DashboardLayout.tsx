@@ -3,7 +3,7 @@
 
 import { ReactNode } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Avatar, AppBar, Toolbar, Typography, Box, CssBaseline, IconButton } from '@mui/material';
-import { Dashboard, People, LocationOn, Category, RoomService, Group, Apartment, Settings } from '@mui/icons-material';
+import { Dashboard, People, LocationOn, Category, RoomService, Group, Apartment, Settings,Inventory } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 
 const drawerWidth = 240;
@@ -59,6 +59,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
           </Typography>
         </Toolbar>
         <List>
+          <ListItem onClick={() => handleNavigation('/inventory')}>
+            <ListItemIcon>
+              <Inventory />
+            </ListItemIcon>
+            <ListItemText primary="Inventory" />
+          </ListItem>
           <ListItem onClick={() => handleNavigation('/dashboard')}>
             <ListItemIcon>
               <Dashboard />
