@@ -6,8 +6,8 @@ import { PrismaClient, UserRole } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const createAdminUser = async () => {
-  const adminEmail = 'admin@example.com';
-  const adminPassword = 'securepassword';
+  const adminEmail = 'jose@gmail.com';
+  const adminPassword = '123456';
 
   const existingAdmin = await prisma.user.findUnique({
     where: { email: adminEmail },

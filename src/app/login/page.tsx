@@ -31,21 +31,38 @@ const LoginPage: React.FC = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isValid }
   } = useForm({
     defaultValues,
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
 
-  const handleLogin = async (event: React.FormEvent) => {
+  const handleLogin = async (data: any) => {
     setIsLoading(true);
-    event.preventDefault();
     // Add your authentication logic here
-    
+    const body = {
+      email: data.email,
+      password: data.password
+    }
+    try {
+      const response = await fetch('/api/login', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body), 
+        method: 'POST'
+      });
 
-    // For now, we'll just redirect to a dashboard or home page on successful login
-    router.push('/dashboard');
+      if (response.status < 400) {
+        // router.push('/dashboard');
+      }
+    } catch (error) {
+      console.log("🚀 ~ handleLogin ~ error:", error)
+      
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,7 +72,7 @@ const LoginPage: React.FC = () => {
           <Typography variant="h4" component="h1" gutterBottom>
             Login
           </Typography>
-          <form onSubmit={handleLogin} style={{ width: '100%' }}>
+          <form onSubmit={handleSubmit(handleLogin)} style={{ width: '100%' }}>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
                 name='email'
@@ -114,7 +131,7 @@ const LoginPage: React.FC = () => {
               )}
             </FormControl>
             <FormControl fullWidth>
-              <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7, mt: 4 }}>
+              <Button disabled={!isValid} fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7, mt: 4 }}>
                 {isLoading ? '...' : 'Login'}
               </Button>
             </FormControl>
