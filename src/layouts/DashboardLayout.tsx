@@ -82,35 +82,11 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
               </ListItemIcon>
               <ListItemText primary="Users" />
             </ListItem>
-            <ListItem onClick={() => handleNavigation('/locations')}>
+            <ListItem onClick={() => handleNavigation('/inventory')}>
               <ListItemIcon>
-                <LocationOn />
+                <Inventory />
               </ListItemIcon>
-              <ListItemText primary="Locations" />
-            </ListItem>
-            <ListItem onClick={() => handleNavigation('/categories')}>
-              <ListItemIcon>
-                <Category />
-              </ListItemIcon>
-              <ListItemText primary="Categories" />
-            </ListItem>
-            <ListItem onClick={() => handleNavigation('/concierge')}>
-              <ListItemIcon>
-                <RoomService />
-              </ListItemIcon>
-              <ListItemText primary="Concierge" />
-            </ListItem>
-            <ListItem onClick={() => handleNavigation('/partners')}>
-              <ListItemIcon>
-                <Group />
-              </ListItemIcon>
-              <ListItemText primary="Partners" />
-            </ListItem>
-            <ListItem onClick={() => handleNavigation('/facilities')}>
-              <ListItemIcon>
-                <Apartment />
-              </ListItemIcon>
-              <ListItemText primary="Facilities" />
+              <ListItemText primary="Inventory" />
             </ListItem>
           </List>
         </Drawer>
