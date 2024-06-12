@@ -88,6 +88,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
               </ListItemIcon>
               <ListItemText primary="Inventory" />
             </ListItem>
+            <ListItem onClick={() => handleNavigation('/supplier')}>
+              <ListItemIcon>
+                <Inventory />
+              </ListItemIcon>
+              <ListItemText primary="Supplier" />
+            </ListItem>
           </List>
         </Drawer>
         <Box
