@@ -53,10 +53,6 @@ export async function DELETE(request: NextRequest){
 
 export async function PUT(request: NextRequest){
   const { id, email, password, role } = await request.json();
-  console.log("🚀 ~ PUT ~ role:", role)
-  console.log("🚀 ~ PUT ~ password:", password)
-  console.log("🚀 ~ PUT ~ email:", email)
-  console.log("🚀 ~ PUT ~ id:", id)
 
   try {
     if(id) {
