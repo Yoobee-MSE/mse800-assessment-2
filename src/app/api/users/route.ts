@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sha256 } from 'js-sha256';
-import { createUser, getUserByEmail, getUserById, getUsers } from '../../../database/users.database';
+import { createUser, deleteUser, getUserByEmail, getUserById, getUsers, updateUser } from '../../../database/users.database';
 import { User } from '@prisma/client';
 
 
@@ -29,6 +29,46 @@ export async function GET(request: NextRequest){
     } else {
       const users = await getUsers()
       return NextResponse.json(users)
+    }
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 500});
+  }
+}
+
+export async function DELETE(request: NextRequest){
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+
+  try {
+    if(id) {
+      await deleteUser(Number(id))
+      return NextResponse.json({ message: 'Successfully Deleted User' }, { status: 200 });
+    } else {
+      return NextResponse.json({ error: 'User id not provided' }, { status: 400});
+    }
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 500});
+  }
+}
+
+export async function PUT(request: NextRequest){
+  const { id, email, password, role } = await request.json();
+  console.log("🚀 ~ PUT ~ role:", role)
+  console.log("🚀 ~ PUT ~ password:", password)
+  console.log("🚀 ~ PUT ~ email:", email)
+  console.log("🚀 ~ PUT ~ id:", id)
+
+  try {
+    if(id) {
+      const user = await getUserById(Number(id))
+      if(!user) {
+        return NextResponse.json({ error: 'User not found' }, { status: 404});
+      } 
+      
+      const updatedUser = await updateUser(id, email, password, role)
+      return NextResponse.json(updatedUser)
+    } else {
+      return NextResponse.json({ error: 'User id not provided' }, { status: 400});
     }
   } catch (error) {
     return NextResponse.json({ error }, { status: 500});

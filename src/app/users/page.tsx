@@ -21,13 +21,18 @@ interface CellType {
   row: User;
 }
 
-const RowOptions = ({ id, row }: { id: number | string; row: User }) => {
+const RowOptions = ({ 
+  row, 
+  handleDelete, 
+  handleUpdate }: 
+  { 
+    row: User, 
+    handleDelete: (row: User) => Promise<void>, 
+    handleUpdate: (row: User) => Promise<void>  
+  }) => {
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState<boolean>(false)
-  const [approveConfirmationOpen, setApproveConfirmationOpen] = useState<boolean>(false)
-
   const rowOptionsOpen = Boolean(anchorEl)
 
   const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
@@ -37,14 +42,15 @@ const RowOptions = ({ id, row }: { id: number | string; row: User }) => {
     setAnchorEl(null)
   }
 
-
-  const handleDelete = async (row: User) => {
-    console.log("🚀 ~ handleDelete ~ row:", row)
-    
+  const handleDeleteClick = (row: User) => {
+    setAnchorEl(null)
+    setDeleteConfirmationOpen(false)
+    handleDelete(row)
   }
 
-  const handleApprove = async (row: User) => {
-    console.log("🚀 ~ handleApprove ~ row:", row)
+  const handleUpdateClick = (row: User) => {
+    setAnchorEl(null)
+    handleUpdate(row)
   }
 
   return (
@@ -67,11 +73,11 @@ const RowOptions = ({ id, row }: { id: number | string; row: User }) => {
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }} href={`/apps/users/${id}`}>
+        <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
           <VisibilityIcon fontSize='small' />
           View
         </MenuItem>
-        <MenuItem onClick={() => setApproveConfirmationOpen(true)} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem onClick={() => handleUpdateClick(row)} sx={{ '& svg': { mr: 2 } }}>
           <EditIcon fontSize='small' />
           Update
         </MenuItem>
@@ -87,7 +93,7 @@ const RowOptions = ({ id, row }: { id: number | string; row: User }) => {
           <Button onClick={() => setDeleteConfirmationOpen(false)} color='primary'>
             Cancel
           </Button>
-          <Button onClick={() => handleDelete(row)} color='error'>
+          <Button onClick={() => handleDeleteClick(row)} color='error'>
             Delete
           </Button>
         </DialogActions>
@@ -96,84 +102,89 @@ const RowOptions = ({ id, row }: { id: number | string; row: User }) => {
   )
 }
 
-const columns: GridColDef[] = [
-  {
-    flex: 0.2,
-    minWidth: 230,
-    field: 'id',
-    headerName: 'ID',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-            <Typography noWrap variant='caption'>
-              {row.id}
-            </Typography>
-          </Box>
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 250,
-    field: 'email',
-    headerName: 'Email',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {row.email}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 250,
-    field: 'role',
-    headerName: 'Role',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Typography noWrap variant='body2'>
-          {row.role}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 90,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions id={row.id} row={row} />
-  }
-]
-
 const defaultValues = {
   email: '',
   password: '',
   role: '',
+  id: 0,
 }
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   password: yup.string().min(5, 'Password must be at least 5 characters').required(),
-  role: yup.string().required()
+  role: yup.string().required(),
+  id: yup.number().notRequired(),
 })
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
-  const [openAddUser, setOpenAddUser] = useState(false);
+  const [formType, setFormType] = useState('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const columns: GridColDef[] = [
+    {
+      flex: 0.2,
+      minWidth: 230,
+      field: 'id',
+      headerName: 'ID',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+              <Typography noWrap variant='caption'>
+                {row.id}
+              </Typography>
+            </Box>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
+      field: 'email',
+      headerName: 'Email',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.email}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
+      field: 'role',
+      headerName: 'Role',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.role}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 90,
+      sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({ row }: CellType) => <RowOptions row={row} handleUpdate={toggleUpdateUser} handleDelete={handleDeleteUser} />
+    }
+  ]
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid }
+    setValue,
+    clearErrors,
+    formState: { errors, isValid },
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -191,7 +202,7 @@ const UsersPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body), 
+        body: JSON.stringify(body),
         method: 'POST'
       });
 
@@ -199,41 +210,120 @@ const UsersPage = () => {
         setMessage('User added successfully');
         setIsOpenSnackbar(true);
       }
-      // getUsers()
+      getUsers()
     } catch (error) {
       setMessage('An error occurred while adding user');
       setIsOpenSnackbar(true);
     } finally {
       setIsAdding(false);
-      setOpenAddUser(false);
+      setFormType('');
+    }
+  }
+
+  const handleDeleteUser = async (row: User) => {
+    try {
+      const response = await fetch(`/api/users?id=${row.id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE'
+      });
+
+      if (response.status < 400) {
+        setMessage('User deleted successfully');
+        setIsOpenSnackbar(true);
+      }
+      getUsers()
+    } catch (error) {
+      setMessage('An error occurred while deleting user');
+      setIsOpenSnackbar(true);
+    }
+  }
+
+  const handleUpdateUser = async (row: User) => {
+    try {
+      const body = {
+        id: row.id,
+        email: row.email,
+        password: row.password,
+        role: row.role,
+      }
+      const response = await fetch(`/api/users`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+        method: 'PUT'
+      });
+
+      if (response.status < 400) {
+        setMessage('User deleted successfully');
+        setIsOpenSnackbar(true);
+        getUsers()
+      }
+    } catch (error) {
+      setMessage('An error occurred while adding user');
+      setIsOpenSnackbar(true);
+    } finally {  
+      setFormType('');
     }
   }
 
   const getUsers = async () => {
     setUsers([]);
-    const usersData = await fetch('/api/users').then((res) => res.json());
-    setUsers(usersData);
+    setIsLoading(true)
+    try {
+      const usersData = await fetch('/api/users').then((res) => res.json());
+      setUsers(usersData);
+    } catch (error) {
+      
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const toggleUpdateUser = async (row: User) => {
+    clearErrors()
+    setValue('email', row.email)
+    setValue('role', row.role)
+    setValue('password', '')
+    setValue('id', row.id)
+    setFormType('Update User')
+  }
+
+  const toggleAddUser = () => {
+    clearErrors()
+    setValue('email', '')
+    setValue('role', '')
+    setValue('password', '')
+    setFormType('Add User')
+  }
+
+  const handleSubmitAction = (data: any) => {
+    if (formType === 'Add User') {
+      handleAddUser(data)
+    } else {
+      handleUpdateUser(data)
+    }
   }
 
   useEffect(() => {
-    if(users.length < 1) {
-      getUsers()
-    }
-  }, [users])
+    getUsers()
+  }, [])
   return (
     <DashboardLayout>
       <Box sx={{ height: 400, width: '100%' }}>
-        <Button onClick={() => setOpenAddUser(true)} variant="contained" color="primary" sx={{ mb: 2 }}>
+        <Button onClick={() => toggleAddUser()} variant="contained" color="primary" sx={{ mb: 2, alignSelf: 'flex-end' }}>
           Add User
         </Button>
-        <DataGrid rows={users} columns={columns} />
+        <DataGrid rows={users} columns={columns} loading={isLoading} />
       </Box>
       <Dialog
-        open={openAddUser}
-        onClose={() => setOpenAddUser(false)}
+        open={formType !== ''}
+        onClose={() => setFormType('')}
       >
-        <DialogTitle>Add User</DialogTitle>
-        <form onSubmit={handleSubmit(handleAddUser)} style={{ width: '100%', marginTop: 20 }}>
+        <DialogTitle>{formType}</DialogTitle>
+        <form onSubmit={handleSubmit(handleSubmitAction)} style={{ width: '100%', marginTop: 20 }}>
           <DialogContent>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
@@ -322,8 +412,8 @@ const UsersPage = () => {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenAddUser(false)}>Cancel</Button>
-            <Button disabled={!isValid} type="submit">{isAdding ? <CircularProgress />: 'Add User'}</Button>
+            <Button onClick={() => setFormType('')}>Cancel</Button>
+            <Button disabled={!isValid} type="submit">{isAdding ? <CircularProgress /> : formType}</Button>
           </DialogActions>
         </form>
       </Dialog>

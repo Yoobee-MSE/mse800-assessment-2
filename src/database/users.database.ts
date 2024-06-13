@@ -36,21 +36,27 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
   });
 };
 
-export const updateUser = async (userId: number, email: string): Promise<User> => {
+export const updateUser = async (id: number, email: string, password: string, role: UserRole): Promise<User> => {
   return prisma.user.update({
     where: {
-      id: userId,
+      id: id,
     },
     data: {
       email,
+      password,
+      role
     },
   });
 };
 
-export const deleteUser = async (userId: number): Promise<User> => {
-  return prisma.user.delete({
-    where: {
-      id: userId,
-    },
-  });
+export const deleteUser = async (id: number): Promise<any> => {
+  const user = await getUserById(id);
+
+  if (user) {
+    return prisma.user.delete({
+      where: {
+        id: user.id,
+      },
+    });
+  }
 };
