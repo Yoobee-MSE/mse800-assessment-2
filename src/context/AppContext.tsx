@@ -4,12 +4,14 @@ import { createContext, useContext, useReducer, useEffect, ReactNode, useState }
 const initialState = {
   isAuthenticated: false,
   user: null,
+  isPageLoading: true,
 };
 
 // Actions
 export const APP_ACTION = {
   SET_IS_AUTHENTICATED: 'SET_IS_AUTHENTICATED',
   SET_USER: 'SET_USER',
+  SET_PAGE_LOADING: 'SET_PAGE_LOADING',
 };
 
 // Reducer function
@@ -19,6 +21,8 @@ const reducer = (state: typeof initialState, action: { type: string; payload: an
       return { ...state, isAuthenticated: action.payload };
     case APP_ACTION.SET_USER:
       return { ...state, user: action.payload };
+    case APP_ACTION.SET_PAGE_LOADING:
+      return { ...state, isPageLoading: action.payload };
     default:
       return state;
   }

@@ -1,11 +1,10 @@
-// src/app/page.tsx
-
 "use client";
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Layout from './layout';
 import { useAppContext } from '../context';
+import { CircularProgress } from '@mui/material';
 
 const HomePage: React.FC = () => {
   const router = useRouter();
@@ -14,11 +13,15 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (!state.isAuthenticated) {
       router.push('/login');
+    } else { 
+      router.push('/dashboard');
     }
   }, [router, state.isAuthenticated]);
 
-  return (
-    <div>Loading...</div>
+  return state.isPageLoading && (
+    <Layout>
+      <CircularProgress />
+    </Layout>
   );
 };
 
