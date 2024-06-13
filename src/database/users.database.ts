@@ -37,13 +37,14 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
 };
 
 export const updateUser = async (id: number, email: string, password: string, role: UserRole): Promise<User> => {
+  const encryptedPassword = sha256(password);
   return prisma.user.update({
     where: {
       id: id,
     },
     data: {
       email,
-      password,
+      password: encryptedPassword,
       role
     },
   });
