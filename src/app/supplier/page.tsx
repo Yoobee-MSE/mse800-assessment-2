@@ -9,7 +9,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import DashboardLayout from '@/layouts/DashboardLayout';
 
-
 type Supplier = {
   id: number;
   name: string;
@@ -151,8 +150,7 @@ const SuppliersPage= () => {
       handleCloseDialog();
   };
   
-
-
+  
   const handleUpdateSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     console.log('submitting form');
     event.preventDefault();
@@ -172,7 +170,6 @@ const SuppliersPage= () => {
     }
     handleCloseDialog();
 };
-
 
   const handleInvalidDialogType = (event: React.FormEvent<HTMLFormElement>) => {
       console.log('submitting form');
@@ -198,24 +195,23 @@ const SuppliersPage= () => {
     }
   };
 
-  const idUpdateFormHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+  const idUpdateFormHandler = async (event: React.FocusEvent<HTMLInputElement>) => {
     console.log('idUpdateFormHandler', event.target.value);
-    if (event.target.value) {
-        fetch(`/api/supplier?id=${event.target.value}`, {
-            method: 'GET',
-        })
-        .then(response => response.json())
-        .then(result => {
-            console.log('result', result, result.data);
-            if (result) {
-                setNewSupplierData(result.data);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-  };
+		if (event.target.value) {
+			fetch(`/api/supplier?id=${event.target.value}`, {
+				method: 'GET',
+			}).then(response => response.json())
+				.then(result => {
+					console.log('result', result, result.data);
+					if (result) {
+						setNewSupplierData(result.data);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
+	}
 
   async function convertStreamToString(readableStream: any) {
 		const reader = readableStream.getReader();
@@ -369,13 +365,13 @@ const SuppliersPage= () => {
               <InputLabel id="demo-simple-select-label">ID</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
-                value={newSupplierData?.id  || ''}
+                value={newSupplierData?.id}
                 onChange={(event) => {
-                  const selectedId = Number(event.target.value);
-                  setNewSupplierData((prevState) => ({
-                    ...prevState,
-                    id: selectedId,
-                  }));
+                  setNewSupplierData(
+                    (prevState) => {
+                      return { ...prevState, id: Number (event.target.value) }
+                    }
+                  )
                 }}
                 onBlur={idUpdateFormHandler}
                 autoFocus
@@ -388,9 +384,9 @@ const SuppliersPage= () => {
                 fullWidth
                 variant="standard"
               >
-                {supplierArrayToDeleteOrUpdate.map((id) => (
-                  <MenuItem value={id} key={id}>{id}</MenuItem>
-                ))}
+                {supplierArrayToDeleteOrUpdate.map((id) => {
+                  return <MenuItem value={id} key={id}>{id}</MenuItem>
+                })}
               </Select>
 
               <TextField
