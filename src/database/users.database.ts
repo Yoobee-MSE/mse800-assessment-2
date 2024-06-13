@@ -1,13 +1,20 @@
 // src/services/userService.ts
 import { PrismaClient, User, UserRole } from '@prisma/client';
+import { sha256 } from 'js-sha256';
 
 const prisma = new PrismaClient();
 
+
+export const getUsers = async (): Promise<User[]> => {
+  return prisma.user.findMany();
+}
+
 export const createUser = async (email: string, password: string, role: UserRole): Promise<User> => {
+  const encryptedPassword = sha256(password);
   return prisma.user.create({
     data: {
       email,
-      password,
+      password: encryptedPassword,
       role,
     },
   });
