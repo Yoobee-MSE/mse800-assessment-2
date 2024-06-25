@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { useState, useEffect } from 'react';
-import { Container, Button, Dialog, DialogContent, DialogActions, DialogContentText, InputLabel, TextField } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogActions, DialogContentText, InputLabel, TextField } from '@mui/material';
 import { MenuItem, DialogTitle, Snackbar, IconButton} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -18,11 +18,11 @@ type Supplier = {
 };
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'name', headerName: 'Supplier Name', width: 200 },
-  { field: 'contact', headerName: 'Contact', width: 130 },
-  { field: 'email', headerName: 'Email', width: 130 },
-  { field: 'phone', headerName: 'Phone', width: 130 },
+  { field: 'id', headerName: 'ID', width: 200 },
+  { field: 'name', headerName: 'Supplier Name', width: 250 },
+  { field: 'contact', headerName: 'Contact', width: 250 },
+  { field: 'email', headerName: 'Email', width: 270 },
+  { field: 'phone', headerName: 'Phone', width: 250 },
 ];
 
 const SuppliersPage= () => {
@@ -105,6 +105,7 @@ const SuppliersPage= () => {
 			})
 		setOpen(false);
 	};
+
 
   const handleAddSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     console.log('submitting form');
@@ -259,9 +260,6 @@ const SuppliersPage= () => {
 
   return (
     <DashboardLayout>
-      <Container>
-        <h1>Suppliers</h1>
-        <div style={{ marginBottom: '20px' }}>
           <Dialog
             open={open}
             onClose={handleCloseDialog}
@@ -505,8 +503,6 @@ const SuppliersPage= () => {
             message={stackMessage}
             action={action}
           />
-        </div>
-      </Container>
     </DashboardLayout>
   );
 };
