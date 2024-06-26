@@ -1,6 +1,6 @@
-import { PrismaClient, Car, } from '@prisma/client';
+import { Car } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import prisma from './client';
 
 type createInventoryInput = Omit<Car, 'id'>;
 export const createInventory = async (

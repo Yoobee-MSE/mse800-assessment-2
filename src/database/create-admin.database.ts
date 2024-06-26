@@ -1,9 +1,6 @@
 import { sha256 } from 'js-sha256';
-// src/services/create-admin.ts
-import { PrismaClient, UserRole } from '@prisma/client';
-
-
-const prisma = new PrismaClient();
+import { UserRole } from '@prisma/client';
+import prisma from './client';
 
 export const createAdminUser = async () => {
   const adminEmail = 'jose@gmail.com';
