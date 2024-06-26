@@ -27,7 +27,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DashboardLayout from '../../layouts/DashboardLayout';
-import { Car, Order, User, UserRole } from '@prisma/client';
+import { Car, Order, OrderStatus, User, UserRole } from '@prisma/client';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -122,12 +122,16 @@ const defaultValues = {
   userId: 0,
   carId: 0,
   quantity: 0,
+  id: 0,
+  status: ''
 }
 
 const schema = yup.object().shape({
   userId: yup.number().required(),
   carId: yup.number().required(),
   quantity: yup.number().required(),
+  id: yup.number().notRequired(),
+  status: yup.string().notRequired(),
 })
 
 const OrdersPage = () => {
@@ -143,8 +147,8 @@ const OrdersPage = () => {
 
   const columns: GridColDef[] = [
     {
-      flex: 0.2,
-      minWidth: 230,
+      flex: 1,
+      minWidth: 50,
       field: 'id',
       headerName: 'ID',
       renderCell: ({ row }: CellType) => {
@@ -160,7 +164,7 @@ const OrdersPage = () => {
       }
     },
     {
-      flex: 0.2,
+      flex: 1,
       minWidth: 250,
       field: 'order.user.email',
       headerName: 'Email',
@@ -173,10 +177,10 @@ const OrdersPage = () => {
       }
     },
     {
-      flex: 0.2,
+      flex: 1,
       minWidth: 250,
       field: 'order.car.vin',
-      headerName: 'Role',
+      headerName: 'Car',
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -186,7 +190,20 @@ const OrdersPage = () => {
       }
     },
     {
-      flex: 0.2,
+      flex: 1,
+      minWidth: 250,
+      field: 'quantity',
+      headerName: 'Quantity',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.quantity}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 1,
       minWidth: 250,
       field: 'status',
       headerName: 'Status',
@@ -336,11 +353,12 @@ const OrdersPage = () => {
   }
 
   const toggleUpdateUser = async (row: OrderDetails) => {
-    // clearErrors()
-    // setValue('email', row.email)
-    // setValue('role', row.role)
-    // setValue('password', '')
-    // setValue('id', row.id)
+    clearErrors()
+    setValue('userId', row.userId)
+    setValue('carId', row.carId)
+    setValue('quantity', row.quantity)
+    setValue('id', row.id)
+    setValue('status', row.status)
     setFormType('Update Order')
   }
 
@@ -456,6 +474,36 @@ const OrdersPage = () => {
               />
               {errors.quantity && <FormHelperText sx={{ color: 'error.main' }}>{errors.quantity.message}</FormHelperText>}
             </FormControl>
+            {formType === 'Update Order' && (
+              <FormControl fullWidth sx={{ mb: 4, mt: 2 }}>
+              <Controller
+                name='status'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <>
+                    <InputLabel id='form-layouts-separator-select-label'>Order Status</InputLabel>
+                    <Select
+                      label='Order Status'
+                      defaultValue=''
+                      id='form-layouts-separator-select'
+                      labelId='form-layouts-separator-select-label'
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                    >
+                      {Object.values(OrderStatus).map((status: any, index: number) => (
+                        <MenuItem key={index} value={status}>
+                          {status}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </>
+                )}
+              />
+              {errors.status && <FormHelperText sx={{ color: 'error.main' }}>{errors.status.message}</FormHelperText>}
+            </FormControl>
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setFormType('')}>Cancel</Button>
