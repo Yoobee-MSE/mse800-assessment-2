@@ -1,18 +1,16 @@
-// src/app/layouts/DashboardLayout.tsx
 "use client";
 
 import { ReactNode } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Avatar, AppBar, Toolbar, Typography, Box, CssBaseline, IconButton } from '@mui/material';
-import { Dashboard, People, WidgetsOutlined, Logout, Inventory, ListOutlined } from '@mui/icons-material';
+import { Dashboard, People, Widgets, Logout, Inventory, List as ListIcon, Warehouse } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import Layout from '../app/layout';
 import { APP_ACTION, useAppContext } from '../context';
 
 const drawerWidth = 240;
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const { dispatch } = useAppContext();
+  const { dispatch, state } = useAppContext();
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -45,7 +43,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
               
             </Typography>
             <IconButton color="inherit">
-              <Avatar>SA</Avatar>
+              Welcome, {state.user?.email}
             </IconButton>
             <IconButton color="inherit" onClick={() => handleLogout()}>
               <Logout />
@@ -90,15 +88,21 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </ListItem>
             <ListItem onClick={() => handleNavigation('/supplier')}>
               <ListItemIcon>
-                <WidgetsOutlined />
+                <Widgets />
               </ListItemIcon>
               <ListItemText primary="Suppliers" />
             </ListItem>
             <ListItem onClick={() => handleNavigation('/orders')}>
               <ListItemIcon>
-                <ListOutlined />
+                <ListIcon />
               </ListItemIcon>
               <ListItemText primary="Orders" />
+            </ListItem>
+            <ListItem onClick={() => handleNavigation('/warehouses')}>
+              <ListItemIcon>
+                <Warehouse />
+              </ListItemIcon>
+              <ListItemText primary="Warehouse" />
             </ListItem>
           </List>
         </Drawer>
