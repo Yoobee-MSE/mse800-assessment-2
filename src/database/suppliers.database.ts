@@ -1,6 +1,5 @@
-import { PrismaClient, Supplier } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Supplier } from '@prisma/client';
+import prisma from './client';
 
 export type SupplierCreateData = Omit<Supplier, 'id' | 'createdAt' | 'updatedAt'>;
 

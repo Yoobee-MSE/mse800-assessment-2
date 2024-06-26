@@ -1,8 +1,7 @@
 // src/services/userService.ts
-import { PrismaClient, User, UserRole } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { sha256 } from 'js-sha256';
-
-const prisma = new PrismaClient();
+import prisma from './client';
 
 
 export const getUsers = async (): Promise<User[]> => {

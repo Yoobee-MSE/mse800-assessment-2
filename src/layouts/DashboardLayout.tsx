@@ -3,7 +3,7 @@
 
 import { ReactNode } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Avatar, AppBar, Toolbar, Typography, Box, CssBaseline, IconButton } from '@mui/material';
-import { Dashboard, People, LocationOn, Category, RoomService, Group, Apartment, Logout, Inventory } from '@mui/icons-material';
+import { Dashboard, People, WidgetsOutlined, Logout, Inventory, ListOutlined } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import Layout from '../app/layout';
 import { APP_ACTION, useAppContext } from '../context';
@@ -90,9 +90,15 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </ListItem>
             <ListItem onClick={() => handleNavigation('/supplier')}>
               <ListItemIcon>
-                <Inventory />
+                <WidgetsOutlined />
               </ListItemIcon>
-              <ListItemText primary="Supplier" />
+              <ListItemText primary="Suppliers" />
+            </ListItem>
+            <ListItem onClick={() => handleNavigation('/orders')}>
+              <ListItemIcon>
+                <ListOutlined />
+              </ListItemIcon>
+              <ListItemText primary="Orders" />
             </ListItem>
           </List>
         </Drawer>
