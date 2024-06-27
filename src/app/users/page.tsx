@@ -106,6 +106,7 @@ const defaultValues = {
   email: '',
   password: '',
   role: '',
+  fullName: '',
   id: 0,
 }
 
@@ -113,6 +114,7 @@ const schema = yup.object().shape({
   email: yup.string().email().required(),
   password: yup.string().min(5, 'Password must be at least 5 characters').required(),
   role: yup.string().required(),
+  fullName: yup.string().required(),
   id: yup.number().notRequired(),
 })
 
@@ -159,6 +161,19 @@ const UsersPage = () => {
     {
       flex: 0.2,
       minWidth: 250,
+      field: 'fullName',
+      headerName: 'Full Name',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.fullName}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
       field: 'role',
       headerName: 'Role',
       renderCell: ({ row }: CellType) => {
@@ -196,6 +211,7 @@ const UsersPage = () => {
       email: data.email,
       password: data.password,
       role: data.role,
+      fullName: data.fullName
     }
     try {
       const response = await fetch('/api/users', {
@@ -247,6 +263,7 @@ const UsersPage = () => {
         email: row.email,
         password: row.password,
         role: row.role,
+        fullName: row.fullName
       }
       const response = await fetch(`/api/users`, {
         headers: {
@@ -288,6 +305,7 @@ const UsersPage = () => {
     setValue('role', row.role)
     setValue('password', '')
     setValue('id', row.id)
+    setValue('fullName', row.fullName)
     setFormType('Update User')
   }
 
@@ -296,6 +314,7 @@ const UsersPage = () => {
     setValue('email', '')
     setValue('role', '')
     setValue('password', '')
+    setValue('fullName', '')
     setFormType('Add User')
   }
 
@@ -343,6 +362,25 @@ const UsersPage = () => {
                 )}
               />
               {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 4 }}>
+              <Controller
+                name='fullName'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <TextField
+                    autoFocus
+                    label='Full Name'
+                    value={value}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    error={Boolean(errors.fullName)}
+                    placeholder='Full Name'
+                  />
+                )}
+              />
+              {errors.fullName && <FormHelperText sx={{ color: 'error.main' }}>{errors.fullName.message}</FormHelperText>}
             </FormControl>
             <FormControl fullWidth>
               <InputLabel error={Boolean(errors.password)}>

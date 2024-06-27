@@ -6,8 +6,8 @@ import { User } from '@prisma/client';
 
 export async function POST(request: Request) {
   try {
-    const { email, password, role } = await request.json();
-    const result = await createUser(email, password, role) as User;
+    const { email, password, role, fullName } = await request.json();
+    const result = await createUser(email, password, role, fullName) as User;
     
     if (!result) {
       return NextResponse.json({ error: 'Unable to Create User' }, { status: 404 });

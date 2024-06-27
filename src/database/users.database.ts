@@ -8,13 +8,14 @@ export const getUsers = async (): Promise<User[]> => {
   return prisma.user.findMany();
 }
 
-export const createUser = async (email: string, password: string, role: UserRole): Promise<User> => {
+export const createUser = async (email: string, password: string, role: UserRole, fullName: string): Promise<User> => {
   const encryptedPassword = sha256(password);
   return prisma.user.create({
     data: {
       email,
       password: encryptedPassword,
       role,
+      fullName
     },
   });
 };

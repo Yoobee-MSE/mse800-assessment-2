@@ -43,7 +43,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
               
             </Typography>
             <IconButton color="inherit">
-              Welcome, {state.user?.email}
+              Kia Ora, {state.user?.email}
             </IconButton>
             <IconButton color="inherit" onClick={() => handleLogout()}>
               <Logout />
