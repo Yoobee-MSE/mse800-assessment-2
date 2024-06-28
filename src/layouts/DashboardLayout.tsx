@@ -72,37 +72,37 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
               <ListItemIcon>
                 <Dashboard />
               </ListItemIcon>
-              <ListItemText primary="Dashboard" />
+              <ListItemText primary={state.dictionary?.menu?.dashboard} />
             </ListItem>
             <ListItem onClick={() => handleNavigation('/users')}>
               <ListItemIcon>
                 <People />
               </ListItemIcon>
-              <ListItemText primary="Users" />
+              <ListItemText primary={state.dictionary?.menu?.users} />
             </ListItem>
             <ListItem onClick={() => handleNavigation('/inventory')}>
               <ListItemIcon>
                 <Inventory />
               </ListItemIcon>
-              <ListItemText primary="Inventory" />
+              <ListItemText primary={state.dictionary?.menu?.inventory} />
             </ListItem>
             <ListItem onClick={() => handleNavigation('/supplier')}>
               <ListItemIcon>
                 <Widgets />
               </ListItemIcon>
-              <ListItemText primary="Suppliers" />
+              <ListItemText primary={state.dictionary?.menu?.suppliers} />
             </ListItem>
             <ListItem onClick={() => handleNavigation('/orders')}>
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
-              <ListItemText primary="Orders" />
+              <ListItemText primary={state.dictionary?.menu?.orders} />
             </ListItem>
             <ListItem onClick={() => handleNavigation('/warehouses')}>
               <ListItemIcon>
                 <Warehouse />
               </ListItemIcon>
-              <ListItemText primary="Warehouse" />
+              <ListItemText primary={state.dictionary?.menu?.warehouse} />
             </ListItem>
           </List>
         </Drawer>

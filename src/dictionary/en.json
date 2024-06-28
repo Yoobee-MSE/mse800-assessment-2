@@ -39,7 +39,8 @@
     "contact": "Contact",
     "phone": "Phone",
     "location": "Location",
-    "capacity": "Capacity"
+    "capacity": "Capacity",
+    "user": "User"
   },
   "forms": {
     "email": "Email",
@@ -49,6 +50,12 @@
     "login": {
       "new_on_our_platform": "New on our platform",
       "create_an_account": "Create An Account"
+    }
+  },
+  "error_messages": {
+    "login": {
+      "email": "Email is required",
+      "password": "Password must be at least 5 characters"
     }
   }
 }

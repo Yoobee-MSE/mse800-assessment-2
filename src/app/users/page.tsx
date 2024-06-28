@@ -16,6 +16,7 @@ import { User, UserRole } from '@prisma/client';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { AppState, useAppContext } from '../../context';
 
 interface CellType {
   row: User;
@@ -23,10 +24,12 @@ interface CellType {
 
 const RowOptions = ({ 
   row, 
+  state,
   handleDelete, 
   handleUpdate }: 
   { 
     row: User, 
+    state: AppState,
     handleDelete: (row: User) => Promise<void>, 
     handleUpdate: (row: User) => Promise<void>  
   }) => {
@@ -75,16 +78,16 @@ const RowOptions = ({
       >
         <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
           <VisibilityIcon fontSize='small' />
-          View
-        </MenuItem>
+            {state.dictionary?.buttons?.view}
+          </MenuItem>
         <MenuItem onClick={() => handleUpdateClick(row)} sx={{ '& svg': { mr: 2 } }}>
           <EditIcon fontSize='small' />
-          Update
-        </MenuItem>
+            {state.dictionary?.buttons?.update}
+          </MenuItem>
         <MenuItem onClick={() => setDeleteConfirmationOpen(true)} sx={{ '& svg': { mr: 2 } }}>
           <DeleteIcon fontSize='small' />
-          Delete
-        </MenuItem>
+            {state.dictionary?.buttons?.delete}
+          </MenuItem>
       </Menu>
       <Dialog open={deleteConfirmationOpen} onClose={() => setDeleteConfirmationOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
@@ -126,13 +129,14 @@ const UsersPage = () => {
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const { state } = useAppContext();
+  
   const columns: GridColDef[] = [
     {
       flex: 0.2,
       minWidth: 230,
       field: 'id',
-      headerName: 'ID',
+      headerName: state.dictionary?.table?.id,
       renderCell: ({ row }: CellType) => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -149,7 +153,7 @@ const UsersPage = () => {
       flex: 0.2,
       minWidth: 250,
       field: 'email',
-      headerName: 'Email',
+      headerName: state.dictionary?.table?.email,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -162,7 +166,7 @@ const UsersPage = () => {
       flex: 0.2,
       minWidth: 250,
       field: 'fullName',
-      headerName: 'Full Name',
+      headerName: state.dictionary?.table?.fullname,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -175,7 +179,7 @@ const UsersPage = () => {
       flex: 0.2,
       minWidth: 250,
       field: 'role',
-      headerName: 'Role',
+      headerName: state.dictionary?.table?.role,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -189,8 +193,8 @@ const UsersPage = () => {
       minWidth: 90,
       sortable: false,
       field: 'actions',
-      headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions row={row} handleUpdate={toggleUpdateUser} handleDelete={handleDeleteUser} />
+      headerName: state.dictionary?.table?.actions,
+      renderCell: ({ row }: CellType) => <RowOptions row={row} state={state} handleUpdate={toggleUpdateUser} handleDelete={handleDeleteUser} />
     }
   ]
 
@@ -450,7 +454,7 @@ const UsersPage = () => {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setFormType('')}>Cancel</Button>
+            <Button onClick={() => setFormType('')}>{state.dictionary?.buttons?.cancel}</Button>
             <Button disabled={!isValid} type="submit">{isAdding ? <CircularProgress /> : formType}</Button>
           </DialogActions>
         </form>

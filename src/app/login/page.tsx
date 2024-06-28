@@ -139,7 +139,7 @@ const LoginPage: React.FC = () => {
             </FormControl>
             <FormControl fullWidth>
               <Button disabled={!isValid} fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7, mt: 4 }}>
-                {isLoading ? <CircularProgress /> : state.dictionary?.buttons?.login}
+                {isLoading ? <CircularProgress className='bg-white' /> : state.dictionary?.buttons?.login}
               </Button>
             </FormControl>
           </form>
