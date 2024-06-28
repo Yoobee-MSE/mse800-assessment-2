@@ -12,7 +12,8 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 import withPublic from '../../hoc/withPublic';
-import { APP_ACTION, useAppContext } from '../../context';
+import { APP_ACTION, AppState, useAppContext } from '../../context';
+import { getDictionary } from '../../dictionary/dictionaries';
 
 const defaultValues = {
   password: '',
@@ -28,7 +29,7 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter();
-  const { dispatch, state } = useAppContext();
+  const { dispatch, state }: { dispatch: any, state: AppState } = useAppContext();
 
   const {
     control,
@@ -76,7 +77,7 @@ const LoginPage: React.FC = () => {
       <Container maxWidth="sm">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
           <Typography variant="h4" component="h1" gutterBottom>
-            Login 
+            {state.dictionary?.buttons?.login}
           </Typography>
           <form onSubmit={handleSubmit(handleLogin)} style={{ width: '100%' }}>
             <FormControl fullWidth sx={{ mb: 4 }}>
@@ -87,12 +88,12 @@ const LoginPage: React.FC = () => {
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     autoFocus
-                    label='Email'
+                    label={state.dictionary?.forms?.email}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
                     error={Boolean(errors.email)}
-                    placeholder='Email'
+                    placeholder={state.dictionary?.forms?.email}
                   />
                 )}
               />
@@ -100,7 +101,7 @@ const LoginPage: React.FC = () => {
             </FormControl>
             <FormControl fullWidth>
               <InputLabel error={Boolean(errors.password)}>
-                Password
+                {state.dictionary?.forms?.password}
               </InputLabel>
               <Controller
                 name='password'
@@ -110,7 +111,7 @@ const LoginPage: React.FC = () => {
                   <OutlinedInput
                     value={value}
                     onBlur={onBlur}
-                    label='Password'
+                    label={state.dictionary?.forms?.password}
                     onChange={onChange}
                     id='auth-login-v2-password'
                     error={Boolean(errors.password)}
@@ -138,14 +139,14 @@ const LoginPage: React.FC = () => {
             </FormControl>
             <FormControl fullWidth>
               <Button disabled={!isValid} fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7, mt: 4 }}>
-                {isLoading ? <CircularProgress /> : 'Login'}
+                {isLoading ? <CircularProgress /> : state.dictionary?.buttons?.login}
               </Button>
             </FormControl>
           </form>
           <div className='flex flex-col justify-center items-center mt-200'>
-            <Typography className='text-center'>New on our platform?
+            <Typography className='text-center'>{state.dictionary?.pages?.login?.new_on_our_platform}
               <Button onClick={() => router.replace('/register')} color='primary'>
-              Create an account
+              {state.dictionary?.pages?.login?.create_an_account}
               </Button>
             </Typography>
           </div>

@@ -1,10 +1,20 @@
 import { createContext, useContext, useReducer, useEffect, ReactNode, useState } from 'react';
+import { getDictionary } from '../dictionary/dictionaries';
 
+export type AppState = {
+  isAuthenticated: boolean,
+  user: any,
+  isPageLoading: boolean,
+  language: string,
+  dictionary: any
+}
 // Initial state
-const initialState = {
+const initialState: AppState = {
   isAuthenticated: false,
   user: null,
   isPageLoading: true,
+  language: 'en',
+  dictionary: {}
 };
 
 // Actions
@@ -12,6 +22,8 @@ export const APP_ACTION = {
   SET_IS_AUTHENTICATED: 'SET_IS_AUTHENTICATED',
   SET_USER: 'SET_USER',
   SET_PAGE_LOADING: 'SET_PAGE_LOADING',
+  SET_APP_LANGUAGE: 'SET_APP_LANGUAGE',
+  SET_APP_DICTIONARY: 'SET_APP_DICTIONARY'
 };
 
 // Reducer function
@@ -23,6 +35,10 @@ const reducer = (state: typeof initialState, action: { type: string; payload: an
       return { ...state, user: action.payload };
     case APP_ACTION.SET_PAGE_LOADING:
       return { ...state, isPageLoading: action.payload };
+    case APP_ACTION.SET_APP_DICTIONARY:
+      return { ...state, dictionary: action.payload };
+    case APP_ACTION.SET_APP_LANGUAGE:
+      return { ...state, language: action.payload };
     default:
       return state;
   }
@@ -62,6 +78,7 @@ const AppProvider = ({ children }: { children: ReactNode }) => {
     const loadedState = loadState();
     dispatch({ type: APP_ACTION.SET_IS_AUTHENTICATED, payload: loadedState.isAuthenticated });
     dispatch({ type: APP_ACTION.SET_USER, payload: loadedState.user });
+    dispatch({ type: APP_ACTION.SET_APP_LANGUAGE, payload: loadedState.language });
     setIsHydrated(true); // Set hydrated to true after loading state
   }, []);
 
@@ -70,6 +87,16 @@ const AppProvider = ({ children }: { children: ReactNode }) => {
       saveState(state);
     }
   }, [state, isHydrated]);
+
+  // Load dictionary based on the language
+  useEffect(() => {
+    const loadDictionary = async () => {
+      const dictionary = await getDictionary(state.language);
+      dispatch({ type: APP_ACTION.SET_APP_DICTIONARY, payload: dictionary });
+    };
+
+    loadDictionary();
+  }, [state.language]);
 
   if (!isHydrated) {
     return null; // Render nothing until the state is hydrated

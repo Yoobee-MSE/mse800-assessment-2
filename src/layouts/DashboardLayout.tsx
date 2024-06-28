@@ -64,7 +64,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         >
           <Toolbar>
             <Typography variant="h6" noWrap component="div">
-              Invetory Management
+              CarDepot
             </Typography>
           </Toolbar>
           <List>
