@@ -20,9 +20,11 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
   const handleLogout = () => {
     // Add your logout logic here
+    router.push('/login');
+    setAnchorEl(null)
     dispatch({ type: APP_ACTION.SET_IS_AUTHENTICATED, payload: false });
     dispatch({ type: APP_ACTION.SET_USER, payload: null })
-    router.push('/login');
+
   }
 
   const handleChangeLanguage = () => {
