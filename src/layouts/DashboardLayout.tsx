@@ -53,7 +53,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            {/* Add your app title or logo here */}
+            {/* Add your app title or logo here */}Kia Ora, {state.user?.fullName}
           </Typography>
           <IconButton color="inherit" onClick={handleChangeLanguage}>
             {state.language === 'en' ? 'EN' : 'MI'}
