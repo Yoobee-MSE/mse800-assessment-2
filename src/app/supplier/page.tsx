@@ -1,30 +1,106 @@
 "use client";
 
-import * as React from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { useState, useEffect } from 'react';
-import { Box, Button, Dialog, DialogContent, DialogActions, DialogContentText, InputLabel, TextField } from '@mui/material';
+import React, { MouseEvent, useState, useEffect } from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Button, Dialog, DialogContent, DialogActions, DialogContentText, InputLabel, TextField, Typography, Menu, Link } from '@mui/material';
 import { MenuItem, DialogTitle, Snackbar, IconButton} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import DashboardLayout from '@/layouts/DashboardLayout';
+import { Supplier } from '@prisma/client';
+import { AppState, useAppContext } from '../../context';
 
-type Supplier = {
-  id: number;
-  name: string;
-  contact: string;
-  email: string;
-  phone: string;
-};
+interface CellType {
+  row: Supplier;
+}
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 200 },
-  { field: 'name', headerName: 'Supplier Name', width: 250 },
-  { field: 'contact', headerName: 'Contact', width: 250 },
-  { field: 'email', headerName: 'Email', width: 270 },
-  { field: 'phone', headerName: 'Phone', width: 250 },
-];
+const RowOptions = ({ 
+  row, 
+  state,
+  // handleDelete, 
+  // handleUpdate 
+}: 
+  { 
+    row: Supplier, 
+    state: AppState,
+    // handleDelete: (row: Car) => Promise<void>, 
+    // handleUpdate: (row: Car) => Promise<void>  
+  }) => {
+  // ** State
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState<boolean>(false)
+  const rowOptionsOpen = Boolean(anchorEl)
 
+  const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleDeleteClick = (row: Supplier) => {
+    setAnchorEl(null)
+    setDeleteConfirmationOpen(false)
+    // handleDelete(row)
+  }
+
+  const handleUpdateClick = (row: Supplier) => {
+    setAnchorEl(null)
+    // handleUpdate(row)
+  }
+
+  return (
+    <>
+      <IconButton size='small' onClick={handleRowOptionsClick}>
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        keepMounted
+        anchorEl={anchorEl}
+        open={rowOptionsOpen}
+        onClose={handleRowOptionsClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        PaperProps={{ style: { minWidth: '8rem' } }}
+      >
+        <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
+          <VisibilityIcon fontSize='small' />
+            {state.dictionary?.buttons?.view}
+          </MenuItem>
+        <MenuItem onClick={() => handleUpdateClick(row)} sx={{ '& svg': { mr: 2 } }}>
+          <EditIcon fontSize='small' />
+            {state.dictionary?.buttons?.update}
+          </MenuItem>
+        <MenuItem onClick={() => setDeleteConfirmationOpen(true)} sx={{ '& svg': { mr: 2 } }}>
+          <DeleteIcon fontSize='small' />
+            {state.dictionary?.buttons?.delete}
+          </MenuItem>
+      </Menu>
+      <Dialog open={deleteConfirmationOpen} onClose={() => setDeleteConfirmationOpen(false)}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>Are you sure you want to delete {row.name}?</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmationOpen(false)} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={() => handleDeleteClick(row)} color='error'>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
 const SuppliersPage= () => {
   const [open, setOpen] = useState(false);
   const [tableRows, setTableRows] = useState<Supplier[]>([])
@@ -39,6 +115,95 @@ const SuppliersPage= () => {
     phone: '',
 
   });
+
+  const { state } = useAppContext();
+
+  const columns: GridColDef[] = [
+    {
+      flex: 0.2,
+      minWidth: 230,
+      field: 'id',
+      headerName: state.dictionary?.table?.id,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+              <Typography noWrap variant='caption'>
+                {row.id}
+              </Typography>
+            </Box>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
+      field: 'supplier.name',
+      headerName: state.dictionary?.table?.supplier_name,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.name}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
+      field: 'contact',
+      headerName: state.dictionary?.table?.contact,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.contact}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
+      field: 'email',
+      headerName: state.dictionary?.table?.email,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.email}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 250,
+      field: 'phone',
+      headerName: state.dictionary?.table?.phone,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.phone}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 90,
+      sortable: false,
+      field: 'actions',
+      headerName: state.dictionary?.table?.contact,
+      renderCell: ({ row }: CellType) => 
+      <RowOptions 
+        row={row} 
+        state={state} 
+        // handleUpdate={toggleUpdateWarehouse} 
+        // handleDelete={handleDeleteWarehouse} 
+      />
+    }
+  ]
+
   const [openStack, setOpenStack] = React.useState(false);
 	const [stackMessage, setStackMessage] = React.useState('');
 	const [selectedSupplierToDelete, setSelectedSupplierToDelete] = React.useState('');
@@ -46,7 +211,7 @@ const SuppliersPage= () => {
   const handleChange = (event: SelectChangeEvent<string>) => {
     console.log('Selected supplier', event.target.value);
     setSelectedSupplierToDelete(event.target.value);
-};
+  };
 
 
   const handleCloseStack = (event: React.SyntheticEvent | Event, reason?: string) => {
@@ -493,7 +658,6 @@ const SuppliersPage= () => {
               initialState={{
                 pagination: { paginationModel: { pageSize: 5 } },
               }}
-              checkboxSelection
             />
           </div>
           <Snackbar

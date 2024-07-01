@@ -27,35 +27,35 @@
     "fullname": "Ingoa Katoa",
     "role": "Tūnga",
     "plate_number": "tauwaka",
-    "make": "Make",
-    "model": "Model",
-    "year": "Year",
-    "color": "Color",
-    "price": "Price",
-    "quantity": "Quantity",
-    "supplier": "Supplier",
-    "warehouse": "Warehouse",
-    "supplier_name": "Supplier Name",
-    "contact": "Contact",
-    "phone": "Phone",
-    "location": "Location",
-    "capacity": "Capacity",
-    "user": "User"
+    "make": "Hanga",
+    "model": "Tauira",
+    "year": "Tau",
+    "color": "Tae",
+    "price": "Utu Hoko",
+    "quantity": "Te nui",
+    "supplier": "Kaiwhakarato",
+    "warehouse": "Whare Pūkainga Taonga",
+    "supplier_name": "Kaiwhakarato",
+    "contact": "Tangata Whakapā",
+    "phone": "Waea Pūkoro",
+    "location": "Tauwāhi",
+    "capacity": "Kahapupuri",
+    "user": "Kaiwhakamahi"
   },
   "forms": {
-    "email": "Email",
-    "password": "Password"
+    "email": "īmēra",
+    "password": "Kupu Muna"
   },
   "pages": {
     "login": {
-      "new_on_our_platform": "New on our platform",
-      "create_an_account": "Create An Account"
+      "new_on_our_platform": "Hou i runga i to maatau papa",
+      "create_an_account": "hanga pūkete"
     }
   },
   "error_messages": {
     "login": {
-      "email": "Email is required",
-      "password": "Password must be at least 5 characters"
+      "email": "Kei te hiahiatia te īmēra",
+      "password": "Ko te kupuhipa kia 5 neke atu nga tohu"
     }
   }
 }

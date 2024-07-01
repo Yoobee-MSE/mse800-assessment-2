@@ -32,6 +32,7 @@ import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { OrderDetails } from '../../database/orders.database';
+import { useAppContext } from '../../context';
 
 interface CellType {
   row: OrderDetails;
@@ -145,12 +146,14 @@ const OrdersPage = () => {
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const { state } = useAppContext();
+
   const columns: GridColDef[] = [
     {
       flex: 1,
       minWidth: 50,
       field: 'id',
-      headerName: 'ID',
+      headerName: state.dictionary?.table?.id,
       renderCell: ({ row }: CellType) => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -167,7 +170,7 @@ const OrdersPage = () => {
       flex: 1,
       minWidth: 250,
       field: 'order.user.email',
-      headerName: 'Email',
+      headerName: state.dictionary?.table?.email,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -180,7 +183,7 @@ const OrdersPage = () => {
       flex: 1,
       minWidth: 250,
       field: 'order.car.vin',
-      headerName: 'Car',
+      headerName: 'VIN',
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -193,7 +196,7 @@ const OrdersPage = () => {
       flex: 1,
       minWidth: 250,
       field: 'quantity',
-      headerName: 'Quantity',
+      headerName: state.dictionary?.table?.quantity,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -206,7 +209,7 @@ const OrdersPage = () => {
       flex: 1,
       minWidth: 250,
       field: 'status',
-      headerName: 'Status',
+      headerName: state.dictionary?.table?.status,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -220,7 +223,7 @@ const OrdersPage = () => {
       minWidth: 90,
       sortable: false,
       field: 'actions',
-      headerName: 'Actions',
+      headerName: state.dictionary?.table?.actions,
       renderCell: ({ row }: CellType) => <RowOptions row={row} handleUpdate={toggleUpdateUser} handleDelete={handleDeleteUser} />
     }
   ]
