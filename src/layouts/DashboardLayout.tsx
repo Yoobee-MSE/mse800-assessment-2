@@ -23,6 +23,10 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     router.push('/login');
   }
 
+  const handleChangeLanguage = () => {
+    dispatch({ type: APP_ACTION.SET_APP_LANGUAGE, payload: state.language === 'en' ? 'mi' : 'en' });
+  }
+
   return (
     // <Layout>
       <Box sx={{ display: 'flex' }}>
@@ -44,6 +48,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </Typography>
             <IconButton color="inherit">
               Kia Ora, {state.user?.email}
+            </IconButton>
+            <IconButton color="inherit" onClick={() => handleChangeLanguage()}>
+              {state.language === 'en' ? 'EN' : 'MI'}
             </IconButton>
             <IconButton color="inherit" onClick={() => handleLogout()}>
               <Logout />
