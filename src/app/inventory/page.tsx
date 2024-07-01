@@ -1,13 +1,17 @@
 // src/app/locations/page.tsx
 "use client";
 
-import { DataGrid } from '@mui/x-data-grid';
-import * as React from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import React, { MouseEvent }from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Link, Menu, Typography } from '@mui/material';
 import DashboardLayout from '../../layouts/DashboardLayout';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -20,30 +24,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-const columns = [
-	{ field: 'id', headerName: 'ID', width: 70 },
-	{ field: 'vin', headerName: 'VIN', width: 200 },
-	{ field: 'make', headerName: 'Make', width: 130 },
-	{ field: 'model', headerName: 'Model', width: 130 },
-	{ field: 'year', headerName: 'Year', width: 130 },
-	{ field: 'color', headerName: 'Color', width: 130 },
-	{ field: 'price', headerName: 'Price', width: 130 },
-	{ field: 'quantity', headerName: 'Quantity', width: 130 },
-	{ field: 'supplierId', headerName: 'Supplier ID', width: 130 },
-	{ field: 'warehouseId', headerName: 'Warehouse ID', width: 130 },
-];
-interface Row {
-	id: number;
-	vin: string;
-	make: string;
-	model: string;
-	year: number;
-	color: string;
-	price: number;
-	quantity: number;
-	supplierId: number;
-	warehouseId: number;
-}
+import { AppState, useAppContext } from '../../context';
+import { Car } from '@prisma/client';
+import CarDetailsDialog from '../../components/details-dialog/CarDetailsDialog';
+import { CarDetails } from '../../database/inventory.database';
+
 interface Warehouse {
 	id: number;
 	name: string;
@@ -53,13 +38,109 @@ interface Warehouse {
 	updatedAt: string; 
 }
 
+interface CellType {
+  row: CarDetails;
+}
+
+const RowOptions = ({ 
+  row, 
+  state,
+  // handleDelete, 
+  // handleUpdate,
+	handleView,
+}: 
+  { 
+    row: CarDetails, 
+    state: AppState,
+    // handleDelete: (row: CarDetails) => Promise<void>, 
+    // handleUpdate: (row: CarDetails) => Promise<void>,
+    handleView: (row: CarDetails) => Promise<void>,
+  }) => {
+  // ** State
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState<boolean>(false)
+  const rowOptionsOpen = Boolean(anchorEl)
+
+  const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleDeleteClick = (row: CarDetails) => {
+    setAnchorEl(null)
+    setDeleteConfirmationOpen(false)
+    // handleDelete(row)
+  }
+
+  const handleUpdateClick = (row: CarDetails) => {
+    setAnchorEl(null)
+    // handleUpdate(row)
+  }
+
+	const handleViewClick = (row: CarDetails) => {
+		setAnchorEl(null)
+		handleView(row)
+	}
+
+  return (
+    <>
+      <IconButton size='small' onClick={handleRowOptionsClick}>
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        keepMounted
+        anchorEl={anchorEl}
+        open={rowOptionsOpen}
+        onClose={handleRowOptionsClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        PaperProps={{ style: { minWidth: '8rem' } }}
+      >
+        <MenuItem onClick={() => handleViewClick(row)} sx={{ '& svg': { mr: 2 } }}>
+          <VisibilityIcon fontSize='small' />
+            {state.dictionary?.buttons?.view}
+          </MenuItem>
+        <MenuItem onClick={() => handleUpdateClick(row)} sx={{ '& svg': { mr: 2 } }}>
+          <EditIcon fontSize='small' />
+            {state.dictionary?.buttons?.update}
+          </MenuItem>
+        <MenuItem onClick={() => setDeleteConfirmationOpen(true)} sx={{ '& svg': { mr: 2 } }}>
+          <DeleteIcon fontSize='small' />
+            {state.dictionary?.buttons?.delete}
+          </MenuItem>
+      </Menu>
+      <Dialog open={deleteConfirmationOpen} onClose={() => setDeleteConfirmationOpen(false)}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>Are you sure you want to delete {row.vin}?</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmationOpen(false)} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={() => handleDeleteClick(row)} color='error'>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
+
 const InventoryPage = () => {
-	const [tableRows, setTableRows] = useState<Row[]>([])
+	const [tableRows, setTableRows] = useState<Car[]>([])
 	const [open, setOpen] = useState(false);
+	const [carDetails, setCarDetails] = useState<Car | null>(null);
 	const [dialogTitle, setDialogTitle] = useState('');
 	const [dialogContent, setDialogContent] = useState('');
 	const [dialogType, setDialogType] = useState('');
-	const [updateFormValue, setUpdateFormValue] = useState<Row>({
+	const [updateFormValue, setUpdateFormValue] = useState<Car>({
 		id: 0,
 		vin: '',
 		make: '',
@@ -76,8 +157,110 @@ const InventoryPage = () => {
 	const [selectedCarToDelete, setSelectedCarToDelete] = React.useState('');
 	const [carsArrayToDeleteOrUpdate, setCarsArrayToDeleteOrUpdate] = React.useState([]);
 	const [warehouseArray, setWarehouseArray] = useState<Warehouse[]>([]);
+
+	const { state } = useAppContext();
+
+	const columns: GridColDef[] = [
+    {
+      flex: 0.2,
+      minWidth: 70,
+      field: 'id',
+      headerName: state.dictionary?.table?.id,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+              <Typography noWrap variant='caption'>
+                {row.id}
+              </Typography>
+            </Box>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 200,
+      field: 'vin',
+      headerName: 'VIN',
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.vin}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 130,
+      field: 'make',
+      headerName: state.dictionary?.table?.make,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.make}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 130,
+      field: 'model',
+      headerName: state.dictionary?.table?.model,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.model}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 130,
+      field: 'year',
+      headerName: state.dictionary?.table?.year,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.model}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 130,
+      field: 'price',
+      headerName: state.dictionary?.table?.price,
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.model}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 90,
+      sortable: false,
+      field: 'actions',
+      headerName: state.dictionary?.table?.actions,
+      renderCell: ({ row }: CellType) => <RowOptions 
+				row={row} 
+				state={state} 
+				// handleUpdate={toggleUpdateUser} 
+				// handleDelete={handleDeleteUser} 
+				handleView={handleView}
+			/>
+    }
+  ]
+	
 	const handleChange = (event: SelectChangeEvent) => {
-		console.log('handleChange event.target.value', event.target.value);
+		
 		setSelectedCarToDelete(event.target.value as string);
 	};
 
@@ -139,15 +322,24 @@ const InventoryPage = () => {
 			})
 		setOpen(false);
 	};
+
+	const handleView = async (row: Car) => {
+		setCarDetails(row);
+	}
+
+	const handleViewClose = () => {
+		setCarDetails(null);
+	}
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		console.log('submitting form');
+		
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
 		const formJson = Object.fromEntries((formData as any).entries());
-		console.log("formJson", formJson);
+		
 		switch (dialogType) {
 			case 'add':
-				console.log('adding inventory item');
+				
 				const response = await fetch('/api/inventory', {
 					method: 'POST',
 					body: JSON.stringify(formJson),
@@ -160,7 +352,7 @@ const InventoryPage = () => {
 				}
 				break;
 			case 'delete':
-				console.log('deleting inventory item');
+				
 				const response2 = await fetch('/api/inventory', {
 					method: 'DELETE',
 					body: JSON.stringify(formJson),
@@ -173,7 +365,7 @@ const InventoryPage = () => {
 				}
 				break;
 			case 'update':
-				console.log('updating inventory item');
+				
 				const response1 = await fetch('/api/inventory', {
 					method: 'PUT',
 					body: JSON.stringify(formJson),
@@ -186,13 +378,13 @@ const InventoryPage = () => {
 				}
 				break;
 			default:
-				console.log('invalid dialog type');
+				
 				break;
 		}
 		handleCloseDialog();
 	}
 	const exportData = () => {
-		console.log('exporting data');
+		
 		const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 		const fileExtension = '.xlsx';
 		const ws = XLSX.utils.json_to_sheet(tableRows);
@@ -202,13 +394,13 @@ const InventoryPage = () => {
 		saveAs(data, 'inventory' + fileExtension);
 	}
 	const vinOnBlurInUpdateFormHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-		console.log('vinOnBlurInUpdateFormHandler', event.target.value);
+		
 		if (event.target.value) {
 			fetch(`/api/inventory?vin=${event.target.value}`, {
 				method: 'GET',
 			}).then(response => response.json())
 				.then(result => {
-					console.log('result', result, result.data);
+					
 					if (result) {
 						setUpdateFormValue(result.data);
 					}
@@ -239,7 +431,7 @@ const InventoryPage = () => {
 			method: 'GET',
 		}).then(response => readableStreamToString(response.body))
 			.then(resultString => {
-				console.log('resultString', resultString);
+				
 				setTableRows(JSON.parse(resultString));
 			})
 			.catch(error => {
@@ -252,7 +444,6 @@ const InventoryPage = () => {
 			method: 'GET',
 		}).then(response => readableStreamToString(response.body))
 			.then(resultString => {
-				console.log('getWarehouseResult resultString', resultString);
 				setWarehouseArray(JSON.parse(resultString));
 			})
 			.catch(error => {
@@ -459,7 +650,7 @@ const InventoryPage = () => {
 							variant="standard"
 							value={updateFormValue.make}
 							onChange={(event) => {
-								console.log('Make event.target.value', event.target.value);
+								
 								setUpdateFormValue(
 									(prevState) => {
 										return { ...prevState, make: event.target.value }
@@ -634,8 +825,14 @@ const InventoryPage = () => {
 					variant="contained" color="primary" sx={{ mb: 2 }}>
 					Export
 				</Button>
-				<DataGrid rows={tableRows} columns={columns} checkboxSelection />
+				<DataGrid rows={tableRows} columns={columns} />
 			</Box>
+			<CarDetailsDialog 
+        open={carDetails !== null} 
+        onClose={handleViewClose} 
+        title="Car Details" 
+        details={carDetails as CarDetails} 
+      />
 			<Snackbar
 				open={openStack}
 				autoHideDuration={6000}

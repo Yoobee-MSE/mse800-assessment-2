@@ -31,6 +31,7 @@ import { Warehouse } from '@prisma/client';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useAppContext } from '../../context';
 
 interface CellType {
   row: Warehouse;
@@ -139,12 +140,14 @@ const WarehousePage = () => {
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const { state } = useAppContext();
+
   const columns: GridColDef[] = [
     {
       flex: 0.2,
       minWidth: 230,
       field: 'id',
-      headerName: 'ID',
+      headerName: state.dictionary?.table?.id,
       renderCell: ({ row }: CellType) => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -161,7 +164,7 @@ const WarehousePage = () => {
       flex: 0.2,
       minWidth: 250,
       field: 'name',
-      headerName: 'Name',
+      headerName: state.dictionary?.table?.warehouse,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -174,7 +177,7 @@ const WarehousePage = () => {
       flex: 0.2,
       minWidth: 250,
       field: 'location',
-      headerName: 'Location',
+      headerName: state.dictionary?.table?.location,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -187,7 +190,7 @@ const WarehousePage = () => {
       flex: 0.2,
       minWidth: 250,
       field: 'capacity',
-      headerName: 'Capacity',
+      headerName: state.dictionary?.table?.capacity,
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
@@ -197,11 +200,11 @@ const WarehousePage = () => {
       }
     },
     {
-      flex: 0.1,
+      flex: 0.2,
       minWidth: 90,
       sortable: false,
       field: 'actions',
-      headerName: 'Actions',
+      headerName: state.dictionary?.table?.actions,
       renderCell: ({ row }: CellType) => <RowOptions row={row} handleUpdate={toggleUpdateWarehouse} handleDelete={handleDeleteWarehouse} />
     }
   ]

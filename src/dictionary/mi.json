@@ -1,0 +1,61 @@
+{
+  "menu": {
+    "dashboard": "Papatohu",
+    "users": "Kaiwhakamahi",
+    "inventory": "Inventory",
+    "suppliers": "Kaituku",
+    "orders": "Nga ota",
+    "warehouse": "Whare putunga"
+  },
+  "buttons": {
+    "login": "Takiuru",
+    "signup": "Waitohu",
+    "add": "Tāpiri",
+    "delete": "Mukua",
+    "view": "Tirohanga",
+    "update": "Whakahou",
+    "export": "Kaweake",
+    "cancel": "Whakakore"
+  },
+  "table": {
+    "rows_per_page": "Nga rarangi mo ia wharangi",
+    "rows_selected": "nga rarangi kua tohua",
+    "actions": "Nga Mahi",
+    "id": "ID",
+    "status": "Tūnga",
+    "email": "īmēra",
+    "fullname": "Ingoa Katoa",
+    "role": "Tūnga",
+    "plate_number": "tauwaka",
+    "make": "Hanga",
+    "model": "Tauira",
+    "year": "Tau",
+    "color": "Tae",
+    "price": "Utu Hoko",
+    "quantity": "Te nui",
+    "supplier": "Kaiwhakarato",
+    "warehouse": "Whare Pūkainga Taonga",
+    "supplier_name": "Kaiwhakarato",
+    "contact": "Tangata Whakapā",
+    "phone": "Waea Pūkoro",
+    "location": "Tauwāhi",
+    "capacity": "Kahapupuri",
+    "user": "Kaiwhakamahi"
+  },
+  "forms": {
+    "email": "īmēra",
+    "password": "Kupu Muna"
+  },
+  "pages": {
+    "login": {
+      "new_on_our_platform": "Hou i runga i to maatau papa",
+      "create_an_account": "hanga pūkete"
+    }
+  },
+  "error_messages": {
+    "login": {
+      "email": "Kei te hiahiatia te īmēra",
+      "password": "Ko te kupuhipa kia 5 neke atu nga tohu"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "menu": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "inventory": "Inventory",
+    "suppliers": "Suppliers",
+    "orders": "Orders",
+    "warehouse": "Warehouse"
+  },
+  "buttons": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "add": "Add",
+    "delete": "Delete",
+    "view": "View",
+    "update": "Update",
+    "export": "Export",
+    "cancel": "Cancel"
+  },
+  "table": {
+    "rows_per_page": "Rows per page",
+    "rows_selected": "rows selected",
+    "actions": "Actions",
+    "id": "ID",
+    "status": "Status",
+    "email": "Email",
+    "fullname": "Full Name",
+    "role": "Role",
+    "plate_number": "Plate Number",
+    "make": "Make",
+    "model": "Model",
+    "year": "Year",
+    "color": "Color",
+    "price": "Price",
+    "quantity": "Quantity",
+    "supplier": "Supplier",
+    "warehouse": "Warehouse",
+    "supplier_name": "Supplier Name",
+    "contact": "Contact",
+    "phone": "Phone",
+    "location": "Location",
+    "capacity": "Capacity",
+    "user": "User"
+  },
+  "forms": {
+    "email": "Email",
+    "password": "Password"
+  },
+  "pages": {
+    "login": {
+      "new_on_our_platform": "New on our platform",
+      "create_an_account": "Create An Account"
+    }
+  },
+  "error_messages": {
+    "login": {
+      "email": "Email is required",
+      "password": "Password must be at least 5 characters"
+    }
+  }
+}
