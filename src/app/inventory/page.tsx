@@ -26,6 +26,8 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { AppState, useAppContext } from '../../context';
 import { Car } from '@prisma/client';
+import CarDetailsDialog from '../../components/details-dialog/CarDetailsDialog';
+import { CarDetails } from '../../database/inventory.database';
 
 interface Warehouse {
 	id: number;
@@ -37,20 +39,22 @@ interface Warehouse {
 }
 
 interface CellType {
-  row: Car;
+  row: CarDetails;
 }
 
 const RowOptions = ({ 
   row, 
   state,
   // handleDelete, 
-  // handleUpdate 
+  // handleUpdate,
+	handleView,
 }: 
   { 
-    row: Car, 
+    row: CarDetails, 
     state: AppState,
-    // handleDelete: (row: Car) => Promise<void>, 
-    // handleUpdate: (row: Car) => Promise<void>  
+    // handleDelete: (row: CarDetails) => Promise<void>, 
+    // handleUpdate: (row: CarDetails) => Promise<void>,
+    handleView: (row: CarDetails) => Promise<void>,
   }) => {
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -64,16 +68,21 @@ const RowOptions = ({
     setAnchorEl(null)
   }
 
-  const handleDeleteClick = (row: Car) => {
+  const handleDeleteClick = (row: CarDetails) => {
     setAnchorEl(null)
     setDeleteConfirmationOpen(false)
     // handleDelete(row)
   }
 
-  const handleUpdateClick = (row: Car) => {
+  const handleUpdateClick = (row: CarDetails) => {
     setAnchorEl(null)
     // handleUpdate(row)
   }
+
+	const handleViewClick = (row: CarDetails) => {
+		setAnchorEl(null)
+		handleView(row)
+	}
 
   return (
     <>
@@ -95,7 +104,7 @@ const RowOptions = ({
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem onClick={() => handleViewClick(row)} sx={{ '& svg': { mr: 2 } }}>
           <VisibilityIcon fontSize='small' />
             {state.dictionary?.buttons?.view}
           </MenuItem>
@@ -127,6 +136,7 @@ const RowOptions = ({
 const InventoryPage = () => {
 	const [tableRows, setTableRows] = useState<Car[]>([])
 	const [open, setOpen] = useState(false);
+	const [carDetails, setCarDetails] = useState<Car | null>(null);
 	const [dialogTitle, setDialogTitle] = useState('');
 	const [dialogContent, setDialogContent] = useState('');
 	const [dialogType, setDialogType] = useState('');
@@ -244,12 +254,13 @@ const InventoryPage = () => {
 				state={state} 
 				// handleUpdate={toggleUpdateUser} 
 				// handleDelete={handleDeleteUser} 
+				handleView={handleView}
 			/>
     }
   ]
 	
 	const handleChange = (event: SelectChangeEvent) => {
-		console.log('handleChange event.target.value', event.target.value);
+		
 		setSelectedCarToDelete(event.target.value as string);
 	};
 
@@ -311,15 +322,24 @@ const InventoryPage = () => {
 			})
 		setOpen(false);
 	};
+
+	const handleView = async (row: Car) => {
+		setCarDetails(row);
+	}
+
+	const handleViewClose = () => {
+		setCarDetails(null);
+	}
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		console.log('submitting form');
+		
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
 		const formJson = Object.fromEntries((formData as any).entries());
-		console.log("formJson", formJson);
+		
 		switch (dialogType) {
 			case 'add':
-				console.log('adding inventory item');
+				
 				const response = await fetch('/api/inventory', {
 					method: 'POST',
 					body: JSON.stringify(formJson),
@@ -332,7 +352,7 @@ const InventoryPage = () => {
 				}
 				break;
 			case 'delete':
-				console.log('deleting inventory item');
+				
 				const response2 = await fetch('/api/inventory', {
 					method: 'DELETE',
 					body: JSON.stringify(formJson),
@@ -345,7 +365,7 @@ const InventoryPage = () => {
 				}
 				break;
 			case 'update':
-				console.log('updating inventory item');
+				
 				const response1 = await fetch('/api/inventory', {
 					method: 'PUT',
 					body: JSON.stringify(formJson),
@@ -358,13 +378,13 @@ const InventoryPage = () => {
 				}
 				break;
 			default:
-				console.log('invalid dialog type');
+				
 				break;
 		}
 		handleCloseDialog();
 	}
 	const exportData = () => {
-		console.log('exporting data');
+		
 		const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 		const fileExtension = '.xlsx';
 		const ws = XLSX.utils.json_to_sheet(tableRows);
@@ -374,13 +394,13 @@ const InventoryPage = () => {
 		saveAs(data, 'inventory' + fileExtension);
 	}
 	const vinOnBlurInUpdateFormHandler = (event: React.FocusEvent<HTMLInputElement>) => {
-		console.log('vinOnBlurInUpdateFormHandler', event.target.value);
+		
 		if (event.target.value) {
 			fetch(`/api/inventory?vin=${event.target.value}`, {
 				method: 'GET',
 			}).then(response => response.json())
 				.then(result => {
-					console.log('result', result, result.data);
+					
 					if (result) {
 						setUpdateFormValue(result.data);
 					}
@@ -411,7 +431,7 @@ const InventoryPage = () => {
 			method: 'GET',
 		}).then(response => readableStreamToString(response.body))
 			.then(resultString => {
-				console.log('resultString', resultString);
+				
 				setTableRows(JSON.parse(resultString));
 			})
 			.catch(error => {
@@ -424,7 +444,6 @@ const InventoryPage = () => {
 			method: 'GET',
 		}).then(response => readableStreamToString(response.body))
 			.then(resultString => {
-				console.log('getWarehouseResult resultString', resultString);
 				setWarehouseArray(JSON.parse(resultString));
 			})
 			.catch(error => {
@@ -631,7 +650,7 @@ const InventoryPage = () => {
 							variant="standard"
 							value={updateFormValue.make}
 							onChange={(event) => {
-								console.log('Make event.target.value', event.target.value);
+								
 								setUpdateFormValue(
 									(prevState) => {
 										return { ...prevState, make: event.target.value }
@@ -808,6 +827,12 @@ const InventoryPage = () => {
 				</Button>
 				<DataGrid rows={tableRows} columns={columns} />
 			</Box>
+			<CarDetailsDialog 
+        open={carDetails !== null} 
+        onClose={handleViewClose} 
+        title="Car Details" 
+        details={carDetails as CarDetails} 
+      />
 			<Snackbar
 				open={openStack}
 				autoHideDuration={6000}
