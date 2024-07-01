@@ -195,12 +195,8 @@ The Car Inventory Management System is released under the MIT License. See the L
 
 Developed by:
 
-Jose Abril Jr. - Project Manager/Lead Developer
-Guanghong He - Lead Developer
-Kristiana Ladera - Developer
+* Jose Abril Jr. - Developer
+* Guanghong He - Developer
+* Kristiana Ladera - Developer
 
 Feel free to contact the developers for any inquiries or support regarding the system.
-
----
-
-This updated README file includes the provided file structure and ensures that the instructions are clear and comprehensive for setting up and running the Car Inventory Management System. Adjust the details such as repository URLs and developer contact information as necessary.
