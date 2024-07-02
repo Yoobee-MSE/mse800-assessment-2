@@ -367,6 +367,11 @@ const OrdersPage = () => {
     }
   }
 
+  const handleCancel = () => { 
+    setFormType('')
+    setSelectedCar(null)
+  }
+
   useEffect(() => {
     if(watchCarId) {
       console.log("🚀 ~ useEffect ~  getValues('carId'):",  watchCarId)
@@ -527,7 +532,7 @@ const OrdersPage = () => {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setFormType('')}>Cancel</Button>
+            <Button onClick={handleCancel}>Cancel</Button>
             <Button disabled={!isValid} type="submit">{isAdding ? <CircularProgress /> : formType}</Button>
           </DialogActions>
         </form>
