@@ -79,7 +79,6 @@ const AppProvider = ({ children }: { children: ReactNode }) => {
     dispatch({ type: APP_ACTION.SET_IS_AUTHENTICATED, payload: loadedState.isAuthenticated });
     dispatch({ type: APP_ACTION.SET_USER, payload: loadedState.user });
     dispatch({ type: APP_ACTION.SET_APP_LANGUAGE, payload: loadedState.language });
-    setIsHydrated(true); // Set hydrated to true after loading state
   }, []);
 
   useEffect(() => {
@@ -96,7 +95,11 @@ const AppProvider = ({ children }: { children: ReactNode }) => {
     };
 
     loadDictionary();
-  }, [state.language]);
+
+    if(state.dictionary) {
+      setIsHydrated(true); // Set hydrated to true after loading state
+    }
+  }, [state.dictionary, state.language]);
 
   if (!isHydrated) {
     return null; // Render nothing until the state is hydrated

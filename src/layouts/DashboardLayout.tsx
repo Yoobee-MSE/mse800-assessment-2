@@ -27,7 +27,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
   }
 
-  const handleChangeLanguage = () => {
+  const handleChangeLanguage = async() => {
     dispatch({ type: APP_ACTION.SET_APP_LANGUAGE, payload: state.language === 'en' ? 'mi' : 'en' });
   }
 

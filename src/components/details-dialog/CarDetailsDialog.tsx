@@ -1,6 +1,5 @@
 // src/components/DetailsDialog.tsx
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Avatar, Grid } from '@mui/material';
-import { Car } from '@prisma/client';
 import { CarDetails } from '../../database/inventory.database';
 
 interface DetailsDialogProps {
