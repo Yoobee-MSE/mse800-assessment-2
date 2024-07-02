@@ -44,18 +44,35 @@
   },
   "forms": {
     "email": "īmēra",
-    "password": "Kupu Muna"
+    "password": "Kupu Muna",
+    "repeat_password": "Tukurua Kupuhipa",
+    "fullname": "Ingoa Katoa"
   },
   "pages": {
     "login": {
       "new_on_our_platform": "Hou i runga i to maatau papa",
-      "create_an_account": "hanga pūkete"
+      "create_an_account": "hanga pūkete",
+      "already_have_an_account": "He pūkete kē?"
     }
   },
   "error_messages": {
     "login": {
       "email": "Kei te hiahiatia te īmēra",
       "password": "Ko te kupuhipa kia 5 neke atu nga tohu"
+    },
+    "signup": {
+      "email": "Kei te hiahiatia te īmēra",
+      "password": "Ko te kupuhipa kia 5 neke atu nga tohu",
+      "repeat_password": "Karekau nga kupuhipa e taurite",
+      "creation_failed": "I rahua te hanga pūkete"
+    }
+  },
+  "success_messages": {
+    "login": {
+      "success": "I angitu te takiuru"
+    },
+    "signup": {
+      "success": "I angitu te hainatanga"
     }
   }
 }
