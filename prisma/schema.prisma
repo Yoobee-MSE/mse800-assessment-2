@@ -33,7 +33,7 @@ model Car {
   year        Int
   color       String
   price       Float
-  quantity    Int
+  plate_number    String
   supplierId  Int
   warehouseId Int
 

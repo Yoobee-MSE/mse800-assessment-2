@@ -2,9 +2,8 @@ import { Car, Supplier, Warehouse } from '@prisma/client';
 import prisma from './client';
 
 type createInventoryInput = Omit<Car, 'id'>;
-export const createInventory = async (
-	  data: createInventoryInput,
-): Promise<Car> => {
+export const createInventory = async (data: createInventoryInput): Promise<Car> => {
+  console.log("🚀 ~ createInventory ~ data:", data)
   return prisma.car.create({
     data: data,
   });

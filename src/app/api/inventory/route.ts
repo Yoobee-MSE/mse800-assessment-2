@@ -2,9 +2,9 @@ import { createInventory, deleteInventory, getAllInventory, getInventoryByVin, u
 import { NextResponse } from 'next/server';
 import { Car, PrismaClient } from '@prisma/client';
 
-export async function POST(req: { json: () => PromiseLike<{ vin: any; make: any; model: any; year: any; color: any; price: any; quantity: any; supplierId: any; warehouseId: any; }> | { vin: any; make: any; model: any; year: any; color: any; price: any; quantity: any; supplierId: any; warehouseId: any; }; }, res: any) {
+export async function POST(req: { json: () => PromiseLike<{ vin: any; make: any; model: any; year: any; color: any; price: any; plate_number: any; supplierId: any; warehouseId: any; }> | { vin: any; make: any; model: any; year: any; color: any; price: any; plate_number: any; supplierId: any; warehouseId: any; }; }, res: any) {
 	console.log("req,res", req, res)
-	const { vin, make, model, year, color, price, quantity, supplierId, warehouseId } = await req.json();
+	const { vin, make, model, year, color, price, plate_number, supplierId, warehouseId } = await req.json();
 
 	try {
 		const result = await createInventory({
@@ -14,7 +14,7 @@ export async function POST(req: { json: () => PromiseLike<{ vin: any; make: any;
 			color: color,
 			year: Number(year),
 			price: Number(price),
-			quantity: Number(quantity),
+			plate_number: plate_number,
 			supplierId: Number(supplierId),
 			warehouseId: Number(warehouseId),
 		});
@@ -69,7 +69,7 @@ export async function PUT(req: { json: () => PromiseLike<{
 	year: any; 
 	color: any; 
 	price: any; 
-	quantity: any; 
+	plate_number: any; 
 	supplierId: any; 
 	warehouseId: any; }> | { 
 		id: number, 
@@ -78,11 +78,11 @@ export async function PUT(req: { json: () => PromiseLike<{
 		year: any; 
 		color: any; 
 		price: any; 
-		quantity: any; 
+		plate_number: any; 
 		supplierId: any; 
 		warehouseId: any; }; 
 	}) {
-	const { id, vin, make, model, year, color, price, quantity, supplierId, warehouseId } = await req.json();
+	const { id, vin, make, model, year, color, price, plate_number, supplierId, warehouseId } = await req.json();
 	try {
 		const data: Car = {
 			id: id,
@@ -92,7 +92,7 @@ export async function PUT(req: { json: () => PromiseLike<{
 			color: color,
 			year: Number(year),
 			price: Number(price),
-			quantity: Number(quantity),
+			plate_number: plate_number,
 			supplierId: Number(supplierId),
 			warehouseId: Number(warehouseId),
 		};

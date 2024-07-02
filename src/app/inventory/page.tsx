@@ -157,7 +157,7 @@ const InventoryPage = () => {
 		year: 0,
 		color: '',
 		price: 0,
-		quantity: 0,
+		plate_number: '',
 		supplierId: 0,
 		warehouseId: 0,
 	});
@@ -248,7 +248,7 @@ const InventoryPage = () => {
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.price}
+            ${row.price.toFixed(2)}
           </Typography>
         )
       }
@@ -325,7 +325,7 @@ const InventoryPage = () => {
 				year: 0,
 				color: '',
 				price: 0,
-				quantity: 0,
+				plate_number: '',
 				supplierId: 0,
 				warehouseId: 0,
 
@@ -365,6 +365,7 @@ const InventoryPage = () => {
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
 		const formJson = Object.fromEntries((formData as any).entries());
+		console.log("🚀 ~ handleSubmit ~ formJson:", formJson)
 		
 		switch (dialogType) {
 			case 'add':
@@ -496,10 +497,11 @@ const InventoryPage = () => {
 		getWarehouseResult()
 		getSupplierResult()
 	}, []);
-	useEffect(() => {
-		//@ts-ignore
-		setCarsArrayToDeleteOrUpdate(tableRows.map((row) => row.vin) as any[]);
-	}, [tableRows]);
+
+	// useEffect(() => {
+	// 	//@ts-ignore
+	// 	setCarsArrayToDeleteOrUpdate(tableRows.map((row) => row.vin) as any[]);
+	// }, [tableRows]);
 	return (
 		<DashboardLayout>
 			<Dialog
@@ -580,10 +582,10 @@ const InventoryPage = () => {
 						<TextField
 							required
 							margin="dense"
-							id="quantity"
-							name="quantity"
-							label="Quantity"
-							type="number"
+							id="plate_number"
+							name="plate_number"
+							label="Plate Number"
+							type="text"
 							fullWidth
 							variant="standard"
 						/>
@@ -793,17 +795,17 @@ const InventoryPage = () => {
 						<TextField
 							required
 							margin="dense"
-							id="quantity"
-							name="quantity"
-							label="Quantity"
+							id="plate_number"
+							name="plate_number"
+							label="Plate Number"
 							type="number"
 							fullWidth
 							variant="standard"
-							value={updateFormValue.quantity}
+							value={updateFormValue.plate_number}
 							onChange={(event) => {
 								setUpdateFormValue(
 									(prevState) => {
-										return { ...prevState, quantity: Number(event.target.value) }
+										return { ...prevState, plate_number: event.target.value }
 									}
 								)
 							}}
