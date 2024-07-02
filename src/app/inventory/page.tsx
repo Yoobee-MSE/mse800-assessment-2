@@ -834,7 +834,7 @@ const InventoryPage = () => {
 						>
 							{
 								supplierArray.map((supplier) => {
-									return <MenuItem value={supplier.id} key={supplier.id}>{supplier.id}</MenuItem>
+									return <MenuItem value={supplier.id} key={supplier.id}>{supplier.id} + {supplier.name}</MenuItem>
 								})
 							}
 							</Select>
@@ -863,7 +863,7 @@ const InventoryPage = () => {
 						>
 							{
 								warehouseArray.map((warehouse) => {
-									return <MenuItem value={warehouse.id} key={warehouse.id}>{warehouse.id}</MenuItem>
+									return <MenuItem value={warehouse.id} key={warehouse.id}>{warehouse.id} + {warehouse.name}</MenuItem>
 								})
 							}
 						</Select>
