@@ -37,6 +37,15 @@ interface Warehouse {
 	createdAt: string; 
 	updatedAt: string; 
 }
+interface Supplier {	  
+	id: number;
+	name: string;
+	contact: string;
+	email: string;
+	phone: string;
+	createdAt: string; 
+	updatedAt: string; 
+}
 
 interface CellType {
   row: CarDetails;
@@ -45,15 +54,15 @@ interface CellType {
 const RowOptions = ({ 
   row, 
   state,
-  // handleDelete, 
-  // handleUpdate,
+  handleDelete, 
+  handleUpdate,
 	handleView,
 }: 
   { 
     row: CarDetails, 
     state: AppState,
-    // handleDelete: (row: CarDetails) => Promise<void>, 
-    // handleUpdate: (row: CarDetails) => Promise<void>,
+    handleDelete: (row: CarDetails) => Promise<void>, 
+    handleUpdate: (row: CarDetails) => Promise<void>,
     handleView: (row: CarDetails) => Promise<void>,
   }) => {
   // ** State
@@ -71,12 +80,12 @@ const RowOptions = ({
   const handleDeleteClick = (row: CarDetails) => {
     setAnchorEl(null)
     setDeleteConfirmationOpen(false)
-    // handleDelete(row)
+    handleDelete(row)
   }
 
   const handleUpdateClick = (row: CarDetails) => {
     setAnchorEl(null)
-    // handleUpdate(row)
+    handleUpdate(row)
   }
 
 	const handleViewClick = (row: CarDetails) => {
@@ -157,6 +166,7 @@ const InventoryPage = () => {
 	const [selectedCarToDelete, setSelectedCarToDelete] = React.useState('');
 	const [carsArrayToDeleteOrUpdate, setCarsArrayToDeleteOrUpdate] = React.useState([]);
 	const [warehouseArray, setWarehouseArray] = useState<Warehouse[]>([]);
+	const [supplierArray, setSupplierArray] = useState<Supplier[]>([]);
 
 	const { state } = useAppContext();
 
@@ -225,7 +235,7 @@ const InventoryPage = () => {
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.model}
+            {row.year}
           </Typography>
         )
       }
@@ -238,7 +248,7 @@ const InventoryPage = () => {
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.model}
+            {row.price}
           </Typography>
         )
       }
@@ -252,8 +262,8 @@ const InventoryPage = () => {
       renderCell: ({ row }: CellType) => <RowOptions 
 				row={row} 
 				state={state} 
-				// handleUpdate={toggleUpdateUser} 
-				// handleDelete={handleDeleteUser} 
+				handleUpdate={ handleUpdate}
+				handleDelete={handleDelete} 
 				handleView={handleView}
 			/>
     }
@@ -323,9 +333,28 @@ const InventoryPage = () => {
 		setOpen(false);
 	};
 
+	const handleUpdate = async (row: Car) => {
+		handleClickOpenUpdateDialog()
+		setUpdateFormValue(row);
+	}
+
+	const handleDelete = async (row: Car) => {
+		const response2 = await fetch('/api/inventory', {
+			method: 'DELETE',
+			body: JSON.stringify(row),
+		});
+		const result2 = await response2.json();
+		if (result2.code === 200) {
+			setStackMessage('Inventory deleted successfully');
+			setOpenStack(true);
+			getCarsResult()
+		}
+	}
 	const handleView = async (row: Car) => {
 		setCarDetails(row);
 	}
+
+
 
 	const handleViewClose = () => {
 		setCarDetails(null);
@@ -450,9 +479,22 @@ const InventoryPage = () => {
 				console.error('Error converting stream to string:', error);
 			});
 	}
+
+	const getSupplierResult = async () => {
+		await fetch('/api/supplier', {
+			method: 'GET',
+		}).then(response => readableStreamToString(response.body))
+			.then(resultString => {
+				setSupplierArray(JSON.parse(resultString));
+			})
+			.catch(error => {
+				console.error('Error converting stream to string:', error);
+			});
+	}
 	useEffect(() => {
 		getCarsResult()
 		getWarehouseResult()
+		getSupplierResult()
 	}, []);
 	useEffect(() => {
 		//@ts-ignore
@@ -545,7 +587,18 @@ const InventoryPage = () => {
 							fullWidth
 							variant="standard"
 						/>
-						<TextField
+						<InputLabel id="demo-simple-select-label">Supplier ID</InputLabel>
+						<Select 
+							labelId="demo-simple-select-label"
+							value={updateFormValue.supplierId}
+							onChange={(event) => {
+								setUpdateFormValue(
+									(prevState: any) => {
+										return { ...prevState, supplierId: event.target.value }
+									}
+								)
+							}}
+							autoFocus
 							required
 							margin="dense"
 							id="supplierId"
@@ -554,7 +607,13 @@ const InventoryPage = () => {
 							type="number"
 							fullWidth
 							variant="standard"
-						/>
+						>
+							{
+								supplierArray.map((supplier) => {
+									return <MenuItem value={supplier.id} key={supplier.id}>{supplier.id}</MenuItem>
+								})
+							}
+						</Select>
 
 						<InputLabel id="demo-simple-select-label">Warehouse ID</InputLabel>
 						<Select
@@ -749,7 +808,18 @@ const InventoryPage = () => {
 								)
 							}}
 						/>
-						<TextField
+						<InputLabel id="demo-simple-select-label">Supplier ID</InputLabel>
+						<Select
+							labelId="demo-simple-select-label"
+							value={updateFormValue.supplierId}
+							onChange={(event) => {
+								setUpdateFormValue(
+									(prevState: any) => {
+										return { ...prevState, supplierId: event.target.value }
+									}
+								)
+							}}
+							autoFocus
 							required
 							margin="dense"
 							id="supplierId"
@@ -758,16 +828,13 @@ const InventoryPage = () => {
 							type="number"
 							fullWidth
 							variant="standard"
-							value={updateFormValue.supplierId}
-							onChange={(event) => {
-								setUpdateFormValue(
-									(prevState) => {
-										return { ...prevState, supplierId: Number(event.target.value) }
-									}
-								)
-							}}
-						/>
-
+						>
+							{
+								supplierArray.map((supplier) => {
+									return <MenuItem value={supplier.id} key={supplier.id}>{supplier.id}</MenuItem>
+								})
+							}
+							</Select>
 						<InputLabel id="demo-simple-select-label">Warehouse ID</InputLabel>
 
 						<Select
@@ -828,11 +895,11 @@ const InventoryPage = () => {
 				<DataGrid rows={tableRows} columns={columns} />
 			</Box>
 			<CarDetailsDialog 
-        open={carDetails !== null} 
-        onClose={handleViewClose} 
-        title="Car Details" 
-        details={carDetails as CarDetails} 
-      />
+				open={carDetails !== null} 
+				onClose={handleViewClose} 
+				title="Car Details" 
+				details={carDetails as CarDetails} 
+			/>
 			<Snackbar
 				open={openStack}
 				autoHideDuration={6000}
