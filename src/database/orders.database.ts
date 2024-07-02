@@ -10,12 +10,11 @@ export const getOrders = async (): Promise<OrderDetails[]> => {
   return prisma.order.findMany({include: {car: true, user: true }});
 }
 
-export const createOrder = async (userId: number, carId: number, quantity: number): Promise<Order> => {
+export const createOrder = async (userId: number, carId: number): Promise<Order> => {
   return prisma.order.create({
     data: {
       userId,
       carId,
-      quantity,
       status: OrderStatus.PENDING,
     },
   });
@@ -30,13 +29,12 @@ export const getOrderById = async (orderId: number): Promise<Order | null> => {
 };
 
 
-export const updateOrder = async (id: number, quantity: number, status: OrderStatus): Promise<Order> => {
+export const updateOrder = async (id: number, status: OrderStatus): Promise<Order> => {
   return prisma.order.update({
     where: {
       id: id,
     },
     data: {
-      quantity,
       status,
     },
   });

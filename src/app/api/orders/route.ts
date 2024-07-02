@@ -5,8 +5,8 @@ import { createOrder, deleteOrder, getOrderById, getOrders, updateOrder } from '
 
 export async function POST(request: Request) {
   try {
-    const { userId, carId, quantity } = await request.json();
-    const result = await createOrder(userId, carId, quantity) as Order;
+    const { userId, carId } = await request.json();
+    const result = await createOrder(userId, carId) as Order;
     
     if (!result) {
       return NextResponse.json({ error: 'Unable to Create User' }, { status: 404 });
@@ -51,7 +51,7 @@ export async function DELETE(request: NextRequest){
 }
 
 export async function PUT(request: NextRequest){
-  const { id, quantity, status } = await request.json();
+  const { id, status } = await request.json();
 
   try {
     if(id) {
@@ -60,7 +60,7 @@ export async function PUT(request: NextRequest){
         return NextResponse.json({ error: 'Order not found' }, { status: 404});
       } 
       
-      const updatedOrder = await updateOrder(id, quantity, status)
+      const updatedOrder = await updateOrder(id, status)
       return NextResponse.json(updatedOrder)
     } else {
       return NextResponse.json({ error: 'Order id not provided' }, { status: 400});

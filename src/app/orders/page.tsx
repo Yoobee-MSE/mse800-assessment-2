@@ -122,7 +122,6 @@ const RowOptions = ({
 const defaultValues = {
   userId: 0,
   carId: 0,
-  quantity: 0,
   id: 0,
   status: ''
 }
@@ -130,7 +129,6 @@ const defaultValues = {
 const schema = yup.object().shape({
   userId: yup.number().required(),
   carId: yup.number().required(),
-  quantity: yup.number().required(),
   id: yup.number().notRequired(),
   status: yup.string().notRequired(),
 })
@@ -138,13 +136,13 @@ const schema = yup.object().shape({
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
-  const [cars, setCars] = useState([]);
+  const [cars, setCars] = useState<Car[]>([]);
   const [formType, setFormType] = useState('');
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
 
   const { state } = useAppContext();
 
@@ -195,19 +193,6 @@ const OrdersPage = () => {
     {
       flex: 1,
       minWidth: 250,
-      field: 'quantity',
-      headerName: state.dictionary?.table?.quantity,
-      renderCell: ({ row }: CellType) => {
-        return (
-          <Typography noWrap variant='body2'>
-            {row.quantity}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 1,
-      minWidth: 250,
       field: 'status',
       headerName: state.dictionary?.table?.status,
       renderCell: ({ row }: CellType) => {
@@ -233,12 +218,15 @@ const OrdersPage = () => {
     handleSubmit,
     setValue,
     clearErrors,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     defaultValues,
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
+  const watchCarId = watch('carId')
 
   const handleAddUser = async(data: any) => {
     const body = {
@@ -293,7 +281,6 @@ const OrdersPage = () => {
     try {
       const body = {
         id: row.id, 
-        quantity: row.quantity, 
         status: row.status
       }
       const response = await fetch(`/api/orders`, {
@@ -359,7 +346,6 @@ const OrdersPage = () => {
     clearErrors()
     setValue('userId', row.userId)
     setValue('carId', row.carId)
-    setValue('quantity', row.quantity)
     setValue('id', row.id)
     setValue('status', row.status)
     setFormType('Update Order')
@@ -369,7 +355,6 @@ const OrdersPage = () => {
     clearErrors()
     setValue('userId', 0)
     setValue('carId', 0)
-    setValue('quantity', 0)
     setFormType('Add Order')
   }
 
@@ -380,6 +365,14 @@ const OrdersPage = () => {
       handleUpdateUser(data)
     }
   }
+
+  useEffect(() => {
+    if(watchCarId) {
+      console.log("🚀 ~ useEffect ~  getValues('carId'):",  watchCarId)
+      const car = cars.find((car: Car) => car.id === watchCarId)
+      setSelectedCar(car || null)
+    }
+  }, [watchCarId, cars])
 
   useEffect(() => {
     getOrders()
@@ -457,26 +450,50 @@ const OrdersPage = () => {
               />
               {errors.carId && <FormHelperText sx={{ color: 'error.main' }}>{errors.carId.message}</FormHelperText>}
             </FormControl>
-            <FormControl fullWidth sx={{ mb: 4 }}>
-              <Controller
-                name='quantity'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange, onBlur } }) => (
-                  <TextField
-                    autoFocus
-                    label='Quantity'
-                    value={value}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    error={Boolean(errors.quantity)}
-                    placeholder='Quantity'
-                    type='number'
-                  />
-                )}
-              />
-              {errors.quantity && <FormHelperText sx={{ color: 'error.main' }}>{errors.quantity.message}</FormHelperText>}
-            </FormControl>
+            {selectedCar && (
+              <FormControl fullWidth sx={{ mb: 4, mt: 2 }}>
+                <TextField
+                  sx={{ mb: 4 }}
+                  autoFocus
+                  label='Make'
+                  value={selectedCar.make}
+                  placeholder='Make'
+                  disabled
+                />
+                <TextField
+                  sx={{ mb: 4 }}
+                  autoFocus
+                  label='Model'
+                  value={selectedCar.model}
+                  placeholder='Model'
+                  disabled
+                />
+                <TextField
+                  sx={{ mb: 4 }}
+                  autoFocus
+                  label='Year'
+                  value={selectedCar.year}
+                  placeholder='Year'
+                  disabled
+                />
+                <TextField
+                  sx={{ mb: 4 }}
+                  autoFocus
+                  label='Plate Number'
+                  value={selectedCar.plate_number}
+                  placeholder='Plate Number'
+                  disabled
+                />
+                <TextField
+                  sx={{ mb: 4 }}
+                  autoFocus
+                  label='Price'
+                  value={'$'+selectedCar.price.toFixed(2)}
+                  placeholder='Price'
+                  disabled
+                />
+              </FormControl>
+            )}
             {formType === 'Update Order' && (
               <FormControl fullWidth sx={{ mb: 4, mt: 2 }}>
               <Controller

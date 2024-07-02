@@ -178,7 +178,7 @@ const DashboardPage = () => {
     try {
       const cars = await fetch('/api/inventory').then((res) => res.json());
       const roleCounts = cars.reduce((acc: any, car: any) => {
-        acc[car.year] = (acc[car.year] || 0) + 1;
+        acc[car.make] = (acc[car.make] || 0) + 1;
         return acc;
       }, {});
 
@@ -189,7 +189,7 @@ const DashboardPage = () => {
         labels: labels,
         datasets: [
           {
-            label: '# of Votes',
+            label: '# of Cars',
             data: data,
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
@@ -211,7 +211,7 @@ const DashboardPage = () => {
           },
         ],
       }
-      setCars(formattedData);
+      setCars(formattedData as any);
     } catch (error) {
       
     } 
