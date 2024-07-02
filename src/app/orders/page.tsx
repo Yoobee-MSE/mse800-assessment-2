@@ -33,6 +33,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { OrderDetails } from '../../database/orders.database';
 import { useAppContext } from '../../context';
+import { formatPrice } from '../../utils/price-format';
 
 interface CellType {
   row: OrderDetails;
@@ -488,7 +489,7 @@ const OrdersPage = () => {
                   sx={{ mb: 4 }}
                   autoFocus
                   label='Price'
-                  value={'$'+selectedCar.price.toFixed(2)}
+                  value={formatPrice(selectedCar.price)}
                   placeholder='Price'
                   disabled
                 />
