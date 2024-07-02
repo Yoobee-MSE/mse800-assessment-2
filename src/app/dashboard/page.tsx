@@ -82,6 +82,7 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUsersLoading, setIsUsersLoading] = useState<boolean>(true);
   const [isOrdersLoading, setIsOrdersLoading] = useState<boolean>(true);
+  const [isCarsLoading, setIsCarsLoading] = useState<boolean>(true);
 
   const getOrders = async () => {
     setIsOrdersLoading(true);
@@ -175,6 +176,7 @@ const DashboardPage = () => {
   }
 
   const getCars = async () => {
+    setIsCarsLoading(true)
     try {
       const cars = await fetch('/api/inventory').then((res) => res.json());
       const roleCounts = cars.reduce((acc: any, car: any) => {
@@ -214,7 +216,9 @@ const DashboardPage = () => {
       setCars(formattedData as any);
     } catch (error) {
       
-    } 
+    } finally {
+      setIsCarsLoading(false)
+    }
   }
 
   const lineData = {
@@ -302,7 +306,7 @@ const DashboardPage = () => {
           {isUsersLoading ? <CircularProgress /> : <PieChart data={users} title={state.dictionary?.menu?.users} />}
         </Grid>
         <Grid item xs={6} padding={10}>
-          <DoughnutChart data={cars} title='Doughnut Chart'/>
+          {isCarsLoading ? <CircularProgress /> : <DoughnutChart data={cars} title={state.dictionary?.menu?.inventory}/> }
         </Grid>
         <Grid item xs={6} padding={10}>
           {isOrdersLoading ? <CircularProgress /> : <LineChart data={orders} title={state.dictionary?.menu?.orders} />}
