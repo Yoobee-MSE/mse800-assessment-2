@@ -403,7 +403,6 @@ const SuppliersPage= () => {
         });
 
         const stringData = await convertStreamToString(response.body);
-        console.log('stringData', stringData);
         setTableRows(JSON.parse(stringData));
     } catch (error) {
         console.error('Error converting stream to string:', error);

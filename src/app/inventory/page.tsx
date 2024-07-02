@@ -498,10 +498,11 @@ const InventoryPage = () => {
 		getSupplierResult()
 	}, []);
 
-	// useEffect(() => {
-	// 	//@ts-ignore
-	// 	setCarsArrayToDeleteOrUpdate(tableRows.map((row) => row.vin) as any[]);
-	// }, [tableRows]);
+	useEffect(() => {
+		//@ts-ignore
+		setCarsArrayToDeleteOrUpdate(tableRows.map((row) => row.vin) as any[]);
+	}, [tableRows]);
+	
 	return (
 		<DashboardLayout>
 			<Dialog
