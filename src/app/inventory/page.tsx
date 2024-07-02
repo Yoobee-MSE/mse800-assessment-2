@@ -502,7 +502,7 @@ const InventoryPage = () => {
 		//@ts-ignore
 		setCarsArrayToDeleteOrUpdate(tableRows.map((row) => row.vin) as any[]);
 	}, [tableRows]);
-	
+
 	return (
 		<DashboardLayout>
 			<Dialog
@@ -613,7 +613,7 @@ const InventoryPage = () => {
 						>
 							{
 								supplierArray.map((supplier) => {
-									return <MenuItem value={supplier.id} key={supplier.id}>{supplier.id}</MenuItem>
+									return <MenuItem value={supplier.id} key={supplier.id}>{supplier.id} {supplier.name}</MenuItem>
 								})
 							}
 						</Select>
@@ -641,7 +641,7 @@ const InventoryPage = () => {
 						>
 							{
 								warehouseArray.map((warehouse) => {
-									return <MenuItem value={warehouse.id} key={warehouse.id}>{warehouse.id}</MenuItem>
+									return <MenuItem value={warehouse.id} key={warehouse.id}>{warehouse.id} {warehouse.name}</MenuItem>
 								})
 							}
 						</Select>
@@ -799,7 +799,7 @@ const InventoryPage = () => {
 							id="plate_number"
 							name="plate_number"
 							label="Plate Number"
-							type="number"
+							type="string"
 							fullWidth
 							variant="standard"
 							value={updateFormValue.plate_number}
