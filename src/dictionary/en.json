@@ -44,18 +44,35 @@
   },
   "forms": {
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "repeat_password": "Repeat Password",
+    "fullname": "Full Name"
   },
   "pages": {
     "login": {
       "new_on_our_platform": "New on our platform",
-      "create_an_account": "Create An Account"
+      "create_an_account": "Create An Account",
+      "already_have_an_account": "Already have an account?"
     }
   },
   "error_messages": {
     "login": {
       "email": "Email is required",
       "password": "Password must be at least 5 characters"
+    },
+    "signup": {
+      "email": "Email is required",
+      "password": "Password must be at least 5 characters",
+      "repeat_password": "Passwords do not match",
+      "creation_failed": "Account creation failed"
+    }
+  },
+  "success_messages": {
+    "login": {
+      "success": "Login successful"
+    },
+    "signup": {
+      "success": "Signup successful"
     }
   }
 }

@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box, FormControl, FormHelperText, InputLabel, OutlinedInput, InputAdornment, IconButton, Icon, CircularProgress } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, FormControl, FormHelperText, InputLabel, OutlinedInput, InputAdornment, IconButton, Icon, CircularProgress, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
@@ -71,6 +71,10 @@ const LoginPage: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const handleChangeLanguage = async(event: SelectChangeEvent) => {
+    dispatch({ type: APP_ACTION.SET_APP_LANGUAGE, payload: event.target.value as string });
+  }
 
   return (
     // <RootLayout>
@@ -143,12 +147,27 @@ const LoginPage: React.FC = () => {
               </Button>
             </FormControl>
           </form>
-          <div className='flex flex-col justify-center items-center mt-200'>
+          <div className='flex flex-col justify-center items-center mt-200 mb-100'>
             <Typography className='text-center'>{state.dictionary?.pages?.login?.new_on_our_platform}
               <Button onClick={() => router.replace('/register')} color='primary'>
               {state.dictionary?.pages?.login?.create_an_account}
               </Button>
             </Typography>
+          </div>
+          <div >
+            <FormControl fullWidth className='flex mt-100'>
+              <InputLabel id="demo-simple-select-label">Language</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={state.language}
+                label="Language"
+                onChange={handleChangeLanguage}
+              >
+                <MenuItem value='mi'>Māori</MenuItem>
+                <MenuItem value='en'>English</MenuItem>
+              </Select>
+            </FormControl>
           </div>
         </Box>
       </Container>
