@@ -1,49 +1,131 @@
 // src/app/locations/page.tsx
 "use client";
 
-import { DataGrid } from '@mui/x-data-grid';
-
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import DashboardLayout from '../../layouts/DashboardLayout';
 
 import { useAppContext } from '../../context';
 import withAuth from '../../hoc/withAuth';
-
-const rows = [
-  { id: 1, name: 'Europe', status: 'Active' },
-  { id: 2, name: 'Australia', status: 'Active' },
-  { id: 3, name: 'Fiji', status: 'Active' },
-  { id: 4, name: 'Indonesia', status: 'Active' },
-  { id: 5, name: 'Japan', status: 'Active' },
-  { id: 6, name: 'Malaysia', status: 'Active' },
-  { id: 7, name: 'Philippines', status: 'Active' },
-  { id: 8, name: 'Singapore', status: 'Active' },
-  { id: 9, name: 'Thailand', status: 'Active' },
-  { id: 10, name: 'United Arab Emirates', status: 'Active' },
-  { id: 11, name: 'Vanuatu', status: 'Active' },
-];
-
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'name', headerName: 'Location Name', width: 200 },
-  { field: 'status', headerName: 'Status', width: 130 },
-];
+import PieChart from '../../components/charts/PieCharts';
+import DoughnutChart from '../../components/charts/DoughnutCharts';
+import LineChart from '../../components/charts/LineCharts';
+import BarCharts from '../../components/charts/BarCharts';
 
 const DashboardPage = () => {
   const { state } = useAppContext();
-  console.log("🚀 ~ DashboardPage ~ state:", state.user)
+  const pieData = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [
+      {
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const doughnutData = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [
+      {
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const lineData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    datasets: [
+      {
+        label: 'Sales',
+        data: [65, 59, 80, 81, 56, 55],
+        fill: false,
+        backgroundColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgba(75, 192, 192, 0.2)',
+      },
+    ],
+  };
+
+  const barData = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [
+      {
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
   
   return (
     <DashboardLayout>
       <Typography variant="h4" component="h1" gutterBottom>
         Dashboard
       </Typography>
-      <Box sx={{ height: 400, width: '100%' }}>
-        <Button variant="contained" color="primary" sx={{ mb: 2 }}>
-          Export
-        </Button>
-        <DataGrid rows={rows} columns={columns} checkboxSelection />
-      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={6} padding={10}>
+          <PieChart data={pieData} title='Pie Chart' />
+        </Grid>
+        <Grid item xs={6} padding={10}>
+          <DoughnutChart data={doughnutData} title='Doughnut Chart'/>
+        </Grid>
+        <Grid item xs={6} padding={10}>
+          <LineChart data={lineData} title='Line Chart' />
+        </Grid>
+        <Grid item xs={6} padding={10}>
+          <BarCharts data={barData} title='Bar Chart' />
+        </Grid>
+      </Grid>
     </DashboardLayout>
   );
 };
