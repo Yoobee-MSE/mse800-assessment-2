@@ -52,14 +52,39 @@ const DashboardPage = () => {
   });
 
   const [users, setUsers] = useState({});
-  const [cars, setCars] = useState<Car[] | []>([]);
+  const [cars, setCars] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: '# of Votes',
+        data: [],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  });
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUsersLoading, setIsUsersLoading] = useState<boolean>(true);
   const [isOrdersLoading, setIsOrdersLoading] = useState<boolean>(true);
 
   const getOrders = async () => {
     setIsOrdersLoading(true);
-    let formattedData: any = [];
     try {
       const ordersData = await fetch('/api/orders').then((res) => res.json());
 
@@ -150,10 +175,43 @@ const DashboardPage = () => {
   }
 
   const getCars = async () => {
-
     try {
-      const ordersData = await fetch('/api/inventory').then((res) => res.json());
-      setCars(ordersData);
+      const cars = await fetch('/api/inventory').then((res) => res.json());
+      const roleCounts = cars.reduce((acc: any, car: any) => {
+        acc[car.year] = (acc[car.year] || 0) + 1;
+        return acc;
+      }, {});
+
+      const labels = Object.keys(roleCounts);
+      const data = Object.values(roleCounts);
+
+      const formattedData = {
+        labels: labels,
+        datasets: [
+          {
+            label: '# of Votes',
+            data: data,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
+            ],
+            borderWidth: 1,
+          },
+        ],
+      }
+      setCars(formattedData);
     } catch (error) {
       
     } 
@@ -244,7 +302,7 @@ const DashboardPage = () => {
           {isUsersLoading ? <CircularProgress /> : <PieChart data={users} title={state.dictionary?.menu?.users} />}
         </Grid>
         <Grid item xs={6} padding={10}>
-          <DoughnutChart data={doughnutData} title='Doughnut Chart'/>
+          <DoughnutChart data={cars} title='Doughnut Chart'/>
         </Grid>
         <Grid item xs={6} padding={10}>
           {isOrdersLoading ? <CircularProgress /> : <LineChart data={orders} title={state.dictionary?.menu?.orders} />}
