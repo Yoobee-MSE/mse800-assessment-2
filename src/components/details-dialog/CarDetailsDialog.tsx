@@ -1,6 +1,7 @@
 // src/components/DetailsDialog.tsx
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Avatar, Grid } from '@mui/material';
 import { CarDetails } from '../../database/inventory.database';
+import { formatPrice } from '../../utils/price-format';
 
 interface DetailsDialogProps {
   open: boolean;
@@ -15,7 +16,7 @@ const CarDetailsDialog: React.FC<DetailsDialogProps> = ({ open, onClose, title, 
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-          <Avatar alt={details?.make} sx={{ width: 100, height: 100 }} />
+          {/* <Avatar alt={details?.make} sx={{ width: 100, height: 100 }} /> */}
           <Typography variant="h6" mt={2}>
             {details?.make} {details?.model}
           </Typography>
@@ -23,7 +24,8 @@ const CarDetailsDialog: React.FC<DetailsDialogProps> = ({ open, onClose, title, 
             {details?.year}
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            Price: ${details?.price}
+            Price: {formatPrice(details?.price)}
+            {/* Price: ${details?.price.toFixed(2)} */}
           </Typography>
         </Box>
         <Box mt={2}>

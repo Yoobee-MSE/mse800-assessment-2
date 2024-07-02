@@ -28,6 +28,7 @@ import { AppState, useAppContext } from '../../context';
 import { Car } from '@prisma/client';
 import CarDetailsDialog from '../../components/details-dialog/CarDetailsDialog';
 import { CarDetails } from '../../database/inventory.database';
+import { formatPrice } from '../../utils/price-format';
 
 interface Warehouse {
 	id: number;
@@ -248,7 +249,7 @@ const InventoryPage = () => {
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
-            ${row.price.toFixed(2)}
+            {formatPrice(row?.price)}
           </Typography>
         )
       }
