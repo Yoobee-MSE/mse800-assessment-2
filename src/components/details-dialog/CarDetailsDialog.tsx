@@ -34,7 +34,7 @@ const CarDetailsDialog: React.FC<DetailsDialogProps> = ({ open, onClose, title, 
               key !== 'imageUrl' && key !== 'make' && key !== 'model' && key !== 'year' && key !== 'price' && (
                 <Grid item xs={6} key={key}>
                   <Typography variant="body2" color="textSecondary">
-                  <strong>{key}:</strong> {typeof value === 'object' ? JSON.stringify(value, null, 2) : value}
+                  <strong>{key}:</strong> {typeof value === 'object' ? value['name'] : value}
                   </Typography>
                 </Grid>
               )
