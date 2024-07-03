@@ -56,7 +56,7 @@ const DashboardPage = () => {
     labels: [],
     datasets: [
       {
-        label: '# of Votes',
+        label: '# of Cars',
         data: [],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
@@ -221,46 +221,6 @@ const DashboardPage = () => {
     }
   }
 
-  const lineData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [
-      {
-        label: 'Sales',
-        data: [1, 5, 10, 15, 20, 25],
-        fill: false,
-        backgroundColor: 'rgb(75, 192, 192)',
-        borderColor: 'rgba(75, 192, 192, 0.2)',
-      },
-    ],
-  };
-
-  const doughnutData = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    datasets: [
-      {
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
   const barData = {
     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
     datasets: [
@@ -289,11 +249,9 @@ const DashboardPage = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true)
     getOrders()
     getUsers()
     getCars()
-    setIsLoading(false)
   }, [])
   
   return (
@@ -312,7 +270,7 @@ const DashboardPage = () => {
           {isOrdersLoading ? <CircularProgress /> : <LineChart data={orders} title={state.dictionary?.menu?.orders} />}
         </Grid>
         <Grid item xs={6} padding={10}>
-          <BarCharts data={barData} title='Bar Chart' />
+          {isCarsLoading ? <CircularProgress /> : <BarCharts data={cars} title={state.dictionary?.menu?.inventory} /> }
         </Grid>
       </Grid>
     </DashboardLayout>

@@ -2,6 +2,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Avatar, Grid } from '@mui/material';
 import { CarDetails } from '../../database/inventory.database';
 import { formatPrice } from '../../utils/price-format';
+import { useAppContext } from '../../context';
 
 interface DetailsDialogProps {
   open: boolean;
@@ -11,6 +12,8 @@ interface DetailsDialogProps {
 }
 
 const CarDetailsDialog: React.FC<DetailsDialogProps> = ({ open, onClose, title, details }) => {
+  const { state } = useAppContext();
+  
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{title}</DialogTitle>
@@ -24,12 +27,12 @@ const CarDetailsDialog: React.FC<DetailsDialogProps> = ({ open, onClose, title, 
             {details?.year}
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            Price: {formatPrice(details?.price)}
+            {state.dictionary?.table?.price}: {formatPrice(details?.price)}
             {/* Price: ${details?.price.toFixed(2)} */}
           </Typography>
         </Box>
         <Box mt={2}>
-          <Typography variant="h6">Details</Typography>
+          <Typography variant="h6">{state.dictionary?.pages?.inventory?.details}</Typography>
           <Grid container spacing={2}>
             {details !== null && Object.entries(details).map(([key, value]) => (
               key !== 'imageUrl' && key !== 'make' && key !== 'model' && key !== 'year' && key !== 'price' && (
@@ -45,7 +48,7 @@ const CarDetailsDialog: React.FC<DetailsDialogProps> = ({ open, onClose, title, 
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
-          Close
+          {state.dictionary?.buttons?.close}
         </Button>
       </DialogActions>
     </Dialog>

@@ -128,14 +128,14 @@ const RowOptions = ({
           </MenuItem>
       </Menu>
       <Dialog open={deleteConfirmationOpen} onClose={() => setDeleteConfirmationOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>{state.dictionary?.buttons?.confirm} {state.dictionary?.buttons?.delete}</DialogTitle>
         <DialogContent>Are you sure you want to delete {row.vin}?</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmationOpen(false)} color='primary'>
-            Cancel
+						{state.dictionary?.buttons?.cancel}
           </Button>
           <Button onClick={() => handleDeleteClick(row)} color='error'>
-            Delete
+						{state.dictionary?.buttons?.delete}
           </Button>
         </DialogActions>
       </Dialog>
@@ -877,37 +877,44 @@ const InventoryPage = () => {
 					</div>}
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleCloseDialog}>Cancel</Button>
+					<Button onClick={handleCloseDialog}>{state.dictionary?.buttons?.cancel}</Button>
 					<Button type="submit"
-					>Subscribe</Button>
+					>{state.dictionary?.buttons?.submit}</Button>
 				</DialogActions>
 			</Dialog>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<Button variant="contained" color="primary" sx={{ mb: 2, mr: 2 }}
 					onClick={handleClickOpenAddDialog}
 				>
-					Add Inventory
+					{state.dictionary?.buttons?.add} {state.dictionary?.menu?.inventory}
 				</Button>
 				<Button variant="contained" color="primary" sx={{ mb: 2, mr: 2 }}
 					onClick={handleClickOpenDeleteDialog}
 				>
-					Delete Inventory
+					{state.dictionary?.buttons?.delete} {state.dictionary?.menu?.inventory}
 				</Button>
 				<Button variant="contained" color="primary" sx={{ mb: 2, mr: 2 }}
 					onClick={handleClickOpenUpdateDialog}
 				>
-					Update Inventory
+					{state.dictionary?.buttons?.update} {state.dictionary?.menu?.inventory}
 				</Button>
 				<Button onClick={exportData}
 					variant="contained" color="primary" sx={{ mb: 2 }}>
-					Export
+					{state.dictionary?.buttons?.export}
 				</Button>
-				<DataGrid rows={tableRows} columns={columns} />
+				<DataGrid 
+					rows={tableRows} 
+					columns={columns}
+					pageSizeOptions={[5]}
+					initialState={{
+						pagination: { paginationModel: { pageSize: 5 } },
+					}}
+				/>
 			</Box>
 			<CarDetailsDialog 
 				open={carDetails !== null} 
 				onClose={handleViewClose} 
-				title="Car Details" 
+				title={state.dictionary?.pages?.inventory?.car_details}
 				details={carDetails as CarDetails} 
 			/>
 			<Snackbar
