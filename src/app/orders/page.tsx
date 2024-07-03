@@ -215,7 +215,7 @@ const OrdersPage = () => {
       sortable: false,
       field: 'actions',
       headerName: state.dictionary?.table?.actions,
-      renderCell: ({ row }: CellType) => <RowOptions row={row} state={state} handleUpdate={toggleUpdateUser} handleDelete={handleDeleteUser} />
+      renderCell: ({ row }: CellType) => <RowOptions row={row} state={state} handleUpdate={toggleUpdateOrder} handleDelete={handleDeleteOrder} />
     }
   ]
 
@@ -234,7 +234,7 @@ const OrdersPage = () => {
 
   const watchCarId = watch('carId')
 
-  const handleAddUser = async(data: any) => {
+  const handleAddOrder = async(data: any) => {
     const body = {
       userId: data.userId,
       carId: data.carId,
@@ -263,7 +263,7 @@ const OrdersPage = () => {
     }
   }
 
-  const handleDeleteUser = async (row: OrderDetails) => {
+  const handleDeleteOrder = async (row: OrderDetails) => {
     try {
       const response = await fetch(`/api/orders?id=${row.id}`, {
         headers: {
@@ -283,7 +283,7 @@ const OrdersPage = () => {
     }
   }
 
-  const handleUpdateUser = async (row: OrderDetails) => {
+  const handleUpdateOrder = async (row: OrderDetails) => {
     try {
       const body = {
         id: row.id, 
@@ -350,7 +350,7 @@ const OrdersPage = () => {
     }
   }
 
-  const toggleUpdateUser = async (row: OrderDetails) => {
+  const toggleUpdateOrder = async (row: OrderDetails) => {
     clearErrors()
     setValue('userId', row.userId)
     setValue('carId', row.carId)
@@ -368,9 +368,9 @@ const OrdersPage = () => {
 
   const handleSubmitAction = (data: any) => {
     if (formType === 'Add Order') {
-      handleAddUser(data)
+      handleAddOrder(data)
     } else {
-      handleUpdateUser(data)
+      handleUpdateOrder(data)
     }
   }
 
