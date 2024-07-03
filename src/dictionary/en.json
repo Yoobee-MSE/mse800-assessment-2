@@ -15,7 +15,11 @@
     "view": "View",
     "update": "Update",
     "export": "Export",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close": "Close",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "order": "Order"
   },
   "table": {
     "rows_per_page": "Rows per page",
@@ -46,13 +50,23 @@
     "email": "Email",
     "password": "Password",
     "repeat_password": "Repeat Password",
-    "fullname": "Full Name"
+    "fullname": "Full Name",
+    "role": "Role",
+    "car": "Car",
+    "warehouse_name": "Warehouse Name",
+    "warehouse_location": "Warehouse Location",
+    "warehouse_capacity": "Warehouse Capacity",
+    "my_profile": "My Profile"
   },
   "pages": {
     "login": {
       "new_on_our_platform": "New on our platform",
       "create_an_account": "Create An Account",
       "already_have_an_account": "Already have an account?"
+    },
+    "inventory": {
+      "car_details": "Car Details",
+      "details": "Details"
     }
   },
   "error_messages": {

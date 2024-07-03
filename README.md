@@ -43,11 +43,8 @@ npm install
 3. Set Up Environment Variables
 Create a `.env` file in the root directory and add the following:
 ```
-DATABASE_URL=your_postgresql_database_url
-NEXTAUTH_SECRET=your_nextauth_secret
-AWS_S3_BUCKET_NAME=your_s3_bucket_name
-AWS_ACCESS_KEY_ID=your_aws_access_key_id
-AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+POSTGRES_PRISMA_URL=your_postgresql_database_url
+POSTGRES_URL_NON_POOLING=your_nextauth_secret
 ```
 
 4. Run Database Migrations
@@ -66,10 +63,6 @@ npx prisma db seed
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

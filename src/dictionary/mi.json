@@ -15,7 +15,11 @@
     "view": "Tirohanga",
     "update": "Whakahou",
     "export": "Kaweake",
-    "cancel": "Whakakore"
+    "cancel": "Whakakore",
+    "close": "Kōpani",
+    "submit": "Tuku Kōrero",
+    "confirm": "Whakakoia",
+    "order": "Nga ota"
   },
   "table": {
     "rows_per_page": "Nga rarangi mo ia wharangi",
@@ -46,13 +50,23 @@
     "email": "īmēra",
     "password": "Kupu Muna",
     "repeat_password": "Tukurua Kupuhipa",
-    "fullname": "Ingoa Katoa"
+    "fullname": "Ingoa Katoa",
+    "role": "Tūnga",
+    "car": "Motokā",
+    "warehouse_name": "Whare Pūkainga Taonga",
+    "warehouse_location": "Tauwāhi",
+    "warehouse_capacity": "kahapupuri",
+    "my_profile": "Toku Kōtaha"
   },
   "pages": {
     "login": {
       "new_on_our_platform": "Hou i runga i to maatau papa",
       "create_an_account": "hanga pūkete",
       "already_have_an_account": "He pūkete kē?"
+    },
+    "inventory": {
+      "car_details": "Motokā Taipitopito",
+      "details": "Taipitopito"
     }
   },
   "error_messages": {

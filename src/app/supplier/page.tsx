@@ -188,20 +188,20 @@ const SuppliersPage= () => {
         )
       }
     },
-    {
-      flex: 0.2,
-      minWidth: 90,
-      sortable: false,
-      field: 'actions',
-      headerName: state.dictionary?.table?.contact,
-      renderCell: ({ row }: CellType) => 
-      <RowOptions 
-        row={row} 
-        state={state} 
-        // handleUpdate={toggleUpdateWarehouse} 
-        // handleDelete={handleDeleteWarehouse} 
-      />
-    }
+    // {
+    //   flex: 0.2,
+    //   minWidth: 90,
+    //   sortable: false,
+    //   field: 'actions',
+    //   headerName: state.dictionary?.table?.contact,
+    //   renderCell: ({ row }: CellType) => 
+    //   <RowOptions 
+    //     row={row} 
+    //     state={state} 
+    //     // handleUpdate={toggleUpdateWarehouse} 
+    //     // handleDelete={handleDeleteWarehouse} 
+    //   />
+    // }
   ]
 
   const [openStack, setOpenStack] = React.useState(false);
@@ -619,9 +619,9 @@ const SuppliersPage= () => {
             }
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>Cancel</Button>
+              <Button onClick={handleCloseDialog}>{state.dictionary?.buttons?.cancel}</Button>
               <Button type="submit"
-              >Submit</Button>
+              >{state.dictionary?.buttons?.submit}</Button>
             </DialogActions>
           </Dialog>
 
@@ -632,7 +632,7 @@ const SuppliersPage= () => {
               sx={{ mb: 2, mr: 2 }}
               onClick={handleAddSupplierDialog}
             >
-              Add Supplier
+              {state.dictionary?.buttons?.add} {state.dictionary?.table?.supplier}
             </Button>
             <Button
               variant="contained"
@@ -640,7 +640,7 @@ const SuppliersPage= () => {
               sx={{ mb: 2, mr: 2 }}
               onClick={handleDeleteSupplierDialog}
             >
-              Delete Supplier
+              {state.dictionary?.buttons?.delete} {state.dictionary?.table?.supplier}
             </Button>
             <Button
               variant="contained"
@@ -648,7 +648,7 @@ const SuppliersPage= () => {
               sx={{ mb: 2, mr: 2 }}
               onClick={handleUpdateSupplierDialog}
             >
-              Update Supplier
+              {state.dictionary?.buttons?.update} {state.dictionary?.table?.supplier}
             </Button>
             <DataGrid
               rows={tableRows}

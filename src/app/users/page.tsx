@@ -76,10 +76,10 @@ const RowOptions = ({
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
+        {/* <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
           <VisibilityIcon fontSize='small' />
             {state.dictionary?.buttons?.view}
-          </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={() => handleUpdateClick(row)} sx={{ '& svg': { mr: 2 } }}>
           <EditIcon fontSize='small' />
             {state.dictionary?.buttons?.update}
@@ -90,14 +90,14 @@ const RowOptions = ({
           </MenuItem>
       </Menu>
       <Dialog open={deleteConfirmationOpen} onClose={() => setDeleteConfirmationOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>{state.dictionary?.buttons?.confirm} {state.dictionary?.buttons?.delete}</DialogTitle>
         <DialogContent>Are you sure you want to delete {row.email}?</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmationOpen(false)} color='primary'>
-            Cancel
+            {state.dictionary?.buttons?.cancel}
           </Button>
           <Button onClick={() => handleDeleteClick(row)} color='error'>
-            Delete
+            {state.dictionary?.buttons?.delete}
           </Button>
         </DialogActions>
       </Dialog>
@@ -337,9 +337,17 @@ const UsersPage = () => {
     <DashboardLayout>
       <Box sx={{ height: 400, width: '100%' }}>
         <Button onClick={() => toggleAddUser()} variant="contained" color="primary" sx={{ mb: 2, alignSelf: 'flex-end' }}>
-          Add User
+          {state.dictionary?.buttons?.add} {state.dictionary?.menu?.users}
         </Button>
-        <DataGrid rows={users} columns={columns} loading={isLoading} />
+        <DataGrid 
+          rows={users} 
+          columns={columns} 
+          loading={isLoading} 
+          pageSizeOptions={[5]}
+					initialState={{
+						pagination: { paginationModel: { pageSize: 5 } },
+					}}
+        />
       </Box>
       <Dialog
         open={formType !== ''}
@@ -356,12 +364,12 @@ const UsersPage = () => {
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     autoFocus
-                    label='Email'
+                    label={state.dictionary?.forms?.email}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
                     error={Boolean(errors.email)}
-                    placeholder='Email'
+                    placeholder={state.dictionary?.forms?.email}
                   />
                 )}
               />
@@ -375,12 +383,12 @@ const UsersPage = () => {
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     autoFocus
-                    label='Full Name'
+                    label={state.dictionary?.forms?.fullname}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
                     error={Boolean(errors.fullName)}
-                    placeholder='Full Name'
+                    placeholder={state.dictionary?.forms?.fullname}
                   />
                 )}
               />
@@ -388,7 +396,7 @@ const UsersPage = () => {
             </FormControl>
             <FormControl fullWidth>
               <InputLabel error={Boolean(errors.password)}>
-                Password
+                {state.dictionary?.forms?.password}
               </InputLabel>
               <Controller
                 name='password'
@@ -398,7 +406,7 @@ const UsersPage = () => {
                   <OutlinedInput
                     value={value}
                     onBlur={onBlur}
-                    label='Password'
+                    label={state.dictionary?.forms?.password}
                     onChange={onChange}
                     id='auth-login-v2-password'
                     error={Boolean(errors.password)}
@@ -431,9 +439,9 @@ const UsersPage = () => {
                 rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <>
-                    <InputLabel id='form-layouts-separator-select-label'>Role</InputLabel>
+                    <InputLabel id='form-layouts-separator-select-label'>{state.dictionary?.forms?.role}</InputLabel>
                     <Select
-                      label='Role'
+                      label={state.dictionary?.forms?.role}
                       defaultValue=''
                       id='form-layouts-separator-select'
                       labelId='form-layouts-separator-select-label'

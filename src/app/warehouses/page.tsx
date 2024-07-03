@@ -31,7 +31,7 @@ import { Warehouse } from '@prisma/client';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useAppContext } from '../../context';
+import { AppState, useAppContext } from '../../context';
 
 interface CellType {
   row: Warehouse;
@@ -39,10 +39,12 @@ interface CellType {
 
 const RowOptions = ({ 
   row, 
+  state,
   handleDelete, 
   handleUpdate }: 
   { 
     row: Warehouse, 
+    state: AppState
     handleDelete: (row: Warehouse) => Promise<void>, 
     handleUpdate: (row: Warehouse) => Promise<void>  
   }) => {
@@ -89,28 +91,28 @@ const RowOptions = ({
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
+        {/* <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
           <VisibilityIcon fontSize='small' />
           View
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={() => handleUpdateClick(row)} sx={{ '& svg': { mr: 2 } }}>
           <EditIcon fontSize='small' />
-          Update
+          {state.dictionary?.buttons?.update}
         </MenuItem>
         <MenuItem onClick={() => setDeleteConfirmationOpen(true)} sx={{ '& svg': { mr: 2 } }}>
           <DeleteIcon fontSize='small' />
-          Delete
+          {state.dictionary?.buttons?.delete}
         </MenuItem>
       </Menu>
       <Dialog open={deleteConfirmationOpen} onClose={() => setDeleteConfirmationOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>{state.dictionary?.buttons?.confirm} {state.dictionary?.buttons?.delete}</DialogTitle>
         <DialogContent>Are you sure you want to delete {row.name}?</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmationOpen(false)} color='primary'>
-            Cancel
+            {state.dictionary?.buttons?.cancel}
           </Button>
           <Button onClick={() => handleDeleteClick(row)} color='error'>
-            Delete
+            {state.dictionary?.buttons?.delete}
           </Button>
         </DialogActions>
       </Dialog>
@@ -205,7 +207,7 @@ const WarehousePage = () => {
       sortable: false,
       field: 'actions',
       headerName: state.dictionary?.table?.actions,
-      renderCell: ({ row }: CellType) => <RowOptions row={row} handleUpdate={toggleUpdateWarehouse} handleDelete={handleDeleteWarehouse} />
+      renderCell: ({ row }: CellType) => <RowOptions row={row} state={state} handleUpdate={toggleUpdateWarehouse} handleDelete={handleDeleteWarehouse} />
     }
   ]
 
@@ -344,7 +346,7 @@ const WarehousePage = () => {
     <DashboardLayout>
       <Box sx={{ height: 400, width: '100%' }}>
         <Button onClick={() => toggleAddWarehouse()} variant="contained" color="primary" sx={{ mb: 2, alignSelf: 'flex-end' }}>
-          Add Warehouse
+          {state.dictionary?.buttons?.add} {state.dictionary?.table?.warehouse}
         </Button>
         <DataGrid rows={warehouses} columns={columns} loading={isLoading} />
       </Box>
@@ -363,12 +365,12 @@ const WarehousePage = () => {
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     autoFocus
-                    label='Warehouse Name'
+                    label={state.dictionary?.forms?.warehouse_name}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
                     error={Boolean(errors.name)}
-                    placeholder='Warehouse Name'
+                    placeholder={state.dictionary?.forms?.warehouse_name}
                   />
                 )}
               />
@@ -382,12 +384,12 @@ const WarehousePage = () => {
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     autoFocus
-                    label='Warehouse Location'
+                    label={state.dictionary?.forms?.warehouse_location}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
                     error={Boolean(errors.location)}
-                    placeholder='Warehouse Location'
+                    placeholder={state.dictionary?.forms?.warehouse_location}
                   />
                 )}
               />
@@ -401,12 +403,12 @@ const WarehousePage = () => {
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     autoFocus
-                    label='Warehouse Capacity'
+                    label={state.dictionary?.forms?.warehouse_capacity}
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
                     error={Boolean(errors.capacity)}
-                    placeholder='Warehouse Capacity'
+                    placeholder={state.dictionary?.forms?.warehouse_capacity}
                     type='number'
                   />
                 )}
@@ -415,7 +417,7 @@ const WarehousePage = () => {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setFormType('')}>Cancel</Button>
+            <Button onClick={() => setFormType('')}>{state.dictionary?.buttons?.cancel}</Button>
             <Button disabled={!isValid} type="submit">{isAdding ? <CircularProgress /> : formType}</Button>
           </DialogActions>
         </form>

@@ -5,6 +5,7 @@ import { Drawer, List, ListItem, ListItemIcon, ListItemText, Avatar, AppBar, Too
 import { Dashboard, People, Widgets, Logout, Inventory, List as ListIcon, Warehouse } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { APP_ACTION, useAppContext } from '../context';
+import UserDetailsDialog from '../components/user-dialog/UserDetailsDialog';
 
 const drawerWidth = 240;
 
@@ -12,6 +13,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const { dispatch, state } = useAppContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const open = Boolean(anchorEl);
 
   const handleNavigation = (path: string) => {
@@ -87,10 +89,10 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
               </Box>
             </Box>
             <Divider />
-            <MenuItem onClick={() => handleNavigation('/profile')}>My Profile</MenuItem>
-            <MenuItem onClick={() => handleNavigation('/settings')}>Settings</MenuItem>
+            <MenuItem onClick={() => setIsProfileOpen(true)}>My Profile</MenuItem>
+            {/* <MenuItem onClick={() => handleNavigation('/settings')}>Settings</MenuItem>
             <MenuItem onClick={() => handleNavigation('/pricing')}>Pricing</MenuItem>
-            <MenuItem onClick={() => handleNavigation('/faq')}>FAQ</MenuItem>
+            <MenuItem onClick={() => handleNavigation('/faq')}>FAQ</MenuItem> */}
             <Divider />
             <MenuItem onClick={handleLogout}>
               <Logout sx={{ mr: 1 }} />
@@ -166,6 +168,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         }}
       >
         {children}
+        <UserDetailsDialog open={isProfileOpen} onClose={() => setIsProfileOpen(false)} details={state.user} />
       </Box>
     </Box>
   );

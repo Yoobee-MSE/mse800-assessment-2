@@ -13,6 +13,7 @@ import {
   DialogTitle, 
   FormControl, 
   FormHelperText, 
+  Grid, 
   IconButton, 
   InputLabel, 
   Link, 
@@ -31,8 +32,10 @@ import { Car, Order, OrderStatus, User, UserRole } from '@prisma/client';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import { OrderDetails } from '../../database/orders.database';
-import { useAppContext } from '../../context';
+import { AppState, useAppContext } from '../../context';
 import { formatPrice } from '../../utils/price-format';
 
 interface CellType {
@@ -41,10 +44,12 @@ interface CellType {
 
 const RowOptions = ({ 
   row, 
+  state,
   handleDelete, 
   handleUpdate }: 
   { 
     row: OrderDetails, 
+    state: AppState,
     handleDelete: (row: OrderDetails) => Promise<void>, 
     handleUpdate: (row: OrderDetails) => Promise<void>  
   }) => {
@@ -91,28 +96,28 @@ const RowOptions = ({
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
+        {/* <MenuItem component={Link} sx={{ '& svg': { mr: 2 } }}>
           <VisibilityIcon fontSize='small' />
           View
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={() => handleUpdateClick(row)} sx={{ '& svg': { mr: 2 } }}>
           <EditIcon fontSize='small' />
-          Update
+          {state.dictionary?.buttons?.update}
         </MenuItem>
         <MenuItem onClick={() => setDeleteConfirmationOpen(true)} sx={{ '& svg': { mr: 2 } }}>
           <DeleteIcon fontSize='small' />
-          Delete
+          {state.dictionary?.buttons?.delete}
         </MenuItem>
       </Menu>
       <Dialog open={deleteConfirmationOpen} onClose={() => setDeleteConfirmationOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>{state.dictionary?.buttons?.confirm} {state.dictionary?.buttons?.delete}</DialogTitle>
         <DialogContent>Are you sure you want to delete {row.id}?</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmationOpen(false)} color='primary'>
-            Cancel
+            {state.dictionary?.buttons?.cancel}
           </Button>
           <Button onClick={() => handleDeleteClick(row)} color='error'>
-            Delete
+            {state.dictionary?.buttons?.delete}
           </Button>
         </DialogActions>
       </Dialog>
@@ -210,7 +215,7 @@ const OrdersPage = () => {
       sortable: false,
       field: 'actions',
       headerName: state.dictionary?.table?.actions,
-      renderCell: ({ row }: CellType) => <RowOptions row={row} handleUpdate={toggleUpdateUser} handleDelete={handleDeleteUser} />
+      renderCell: ({ row }: CellType) => <RowOptions row={row} state={state} handleUpdate={toggleUpdateUser} handleDelete={handleDeleteUser} />
     }
   ]
 
@@ -293,7 +298,7 @@ const OrdersPage = () => {
       });
 
       if (response.status < 400) {
-        setMessage('User deleted successfully');
+        setMessage('Order updated successfully');
         setIsOpenSnackbar(true);
         getOrders()
       }
@@ -372,6 +377,17 @@ const OrdersPage = () => {
     setSelectedCar(null)
   }
 
+  const exportData = () => {
+		
+		const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+		const fileExtension = '.xlsx';
+		const ws = XLSX.utils.json_to_sheet(orders);
+		const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+		const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+		const data = new Blob([excelBuffer], { type: fileType });
+		saveAs(data, 'orders' + fileExtension);
+	}
+
   useEffect(() => {
     if(watchCarId) {
       console.log("🚀 ~ useEffect ~  getValues('carId'):",  watchCarId)
@@ -388,9 +404,15 @@ const OrdersPage = () => {
   return (
     <DashboardLayout>
       <Box sx={{ height: 400, width: '100%' }}>
-        <Button onClick={() => toggleAddUser()} variant="contained" color="primary" sx={{ mb: 2, alignSelf: 'flex-end' }}>
-          Add Order
-        </Button>
+        <Grid sx={{ flex: 1, justifyContent: 'space-between' }}>
+          <Button onClick={() => toggleAddUser()} variant="contained" color="primary" sx={{ mb: 2, alignSelf: 'flex-start' }}>
+            {state.dictionary?.buttons?.add} {state.dictionary?.buttons?.order}
+          </Button>
+          <Button onClick={exportData}
+            variant="contained" color="primary" sx={{ ml: 2, mb: 2, alignSelf: 'flex-end' }}>
+            {state.dictionary?.buttons?.export}
+          </Button>
+        </Grid>
         <DataGrid rows={orders} columns={columns} loading={isLoading} />
       </Box>
       <Dialog
@@ -407,9 +429,9 @@ const OrdersPage = () => {
                 rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <>
-                    <InputLabel id='form-layouts-separator-select-label'>User</InputLabel>
+                    <InputLabel id='form-layouts-separator-select-label'>{state.dictionary?.table?.user}</InputLabel>
                     <Select
-                      label='User'
+                      label={state.dictionary?.table?.user}
                       defaultValue=''
                       id='form-layouts-separator-select'
                       labelId='form-layouts-separator-select-label'
@@ -435,9 +457,9 @@ const OrdersPage = () => {
                 rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <>
-                    <InputLabel id='form-layouts-separator-select-label'>Cars</InputLabel>
+                    <InputLabel id='form-layouts-separator-select-label'>{state.dictionary?.forms?.car}</InputLabel>
                     <Select
-                      label='User'
+                      label={state.dictionary?.forms?.car}
                       defaultValue=''
                       id='form-layouts-separator-select'
                       labelId='form-layouts-separator-select-label'
@@ -532,7 +554,7 @@ const OrdersPage = () => {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCancel}>Cancel</Button>
+            <Button onClick={handleCancel}>{state.dictionary?.buttons?.cancel}</Button>
             <Button disabled={!isValid} type="submit">{isAdding ? <CircularProgress /> : formType}</Button>
           </DialogActions>
         </form>
