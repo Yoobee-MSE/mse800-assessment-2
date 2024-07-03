@@ -287,6 +287,8 @@ const OrdersPage = () => {
     try {
       const body = {
         id: row.id, 
+        userId: row.userId,
+        carId: row.carId,
         status: row.status
       }
       const response = await fetch(`/api/orders`, {

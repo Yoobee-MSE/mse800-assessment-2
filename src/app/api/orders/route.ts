@@ -51,7 +51,7 @@ export async function DELETE(request: NextRequest){
 }
 
 export async function PUT(request: NextRequest){
-  const { id, status } = await request.json();
+  const { id, status, userId, carId } = await request.json();
 
   try {
     if(id) {
@@ -60,7 +60,7 @@ export async function PUT(request: NextRequest){
         return NextResponse.json({ error: 'Order not found' }, { status: 404});
       } 
       
-      const updatedOrder = await updateOrder(id, status)
+      const updatedOrder = await updateOrder(id, userId, carId, status)
       return NextResponse.json(updatedOrder)
     } else {
       return NextResponse.json({ error: 'Order id not provided' }, { status: 400});

@@ -29,12 +29,14 @@ export const getOrderById = async (orderId: number): Promise<Order | null> => {
 };
 
 
-export const updateOrder = async (id: number, status: OrderStatus): Promise<Order> => {
+export const updateOrder = async (id: number, userId: number, carId: number, status: OrderStatus): Promise<Order> => {
   return prisma.order.update({
     where: {
       id: id,
     },
     data: {
+      userId,
+      carId,
       status,
     },
   });
