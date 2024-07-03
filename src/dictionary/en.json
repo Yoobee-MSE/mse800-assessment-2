@@ -55,7 +55,8 @@
     "car": "Car",
     "warehouse_name": "Warehouse Name",
     "warehouse_location": "Warehouse Location",
-    "warehouse_capacity": "Warehouse Capacity"
+    "warehouse_capacity": "Warehouse Capacity",
+    "my_profile": "My Profile"
   },
   "pages": {
     "login": {

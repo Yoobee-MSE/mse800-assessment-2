@@ -55,7 +55,8 @@
     "car": "Motokā",
     "warehouse_name": "Whare Pūkainga Taonga",
     "warehouse_location": "Tauwāhi",
-    "warehouse_capacity": "kahapupuri"
+    "warehouse_capacity": "kahapupuri",
+    "my_profile": "Toku Kōtaha"
   },
   "pages": {
     "login": {
