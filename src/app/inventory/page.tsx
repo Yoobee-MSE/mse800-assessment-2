@@ -144,9 +144,9 @@ const RowOptions = ({
 }
 
 const InventoryPage = () => {
-	const [tableRows, setTableRows] = useState<Car[]>([])
+	const [tableRows, setTableRows] = useState<CarDetails[]>([])
 	const [open, setOpen] = useState(false);
-	const [carDetails, setCarDetails] = useState<Car | null>(null);
+	const [carDetails, setCarDetails] = useState<CarDetails | null>(null);
 	const [dialogTitle, setDialogTitle] = useState('');
 	const [dialogContent, setDialogContent] = useState('');
 	const [dialogType, setDialogType] = useState('');
@@ -160,7 +160,7 @@ const InventoryPage = () => {
 		price: 0,
 		plate_number: '',
 		supplierId: 0,
-		warehouseId: 0,
+		warehouseId: 0
 	});
 	const [openStack, setOpenStack] = React.useState(false);
 	const [stackMessage, setStackMessage] = React.useState('');
@@ -329,29 +329,31 @@ const InventoryPage = () => {
 				plate_number: '',
 				supplierId: 0,
 				warehouseId: 0,
-
 			})
 		setOpen(false);
 	};
 
-	const handleUpdate = async (row: Car) => {
+	const handleUpdate = async (row: CarDetails) => {
 		handleClickOpenUpdateDialog()
 		setUpdateFormValue(row);
 	}
 
-	const handleDelete = async (row: Car) => {
+	const handleDelete = async (row: CarDetails) => {
 		const response2 = await fetch('/api/inventory', {
 			method: 'DELETE',
 			body: JSON.stringify(row),
 		});
 		const result2 = await response2.json();
-		if (result2.code === 200) {
+		if (result2.code === 200 && !result2.data.error) {
 			setStackMessage('Inventory deleted successfully');
 			setOpenStack(true);
 			getCarsResult()
+		} else {
+			setStackMessage('Error deleting inventory');
+			setOpenStack(true);
 		}
 	}
-	const handleView = async (row: Car) => {
+	const handleView = async (row: CarDetails) => {
 		setCarDetails(row);
 	}
 
@@ -418,7 +420,11 @@ const InventoryPage = () => {
 		
 		const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 		const fileExtension = '.xlsx';
-		const ws = XLSX.utils.json_to_sheet(tableRows);
+		const newTableRows = tableRows.map((row) => {
+			const { id, vin, make, model, year, color, price, plate_number, supplierId, warehouseId,supplier,warehouse } = row;
+			return { id, vin, make, model, year, color, price, plate_number, supplierId,supplier:supplier.name, warehouseId,warehouse:warehouse.name };
+		})
+		const ws = XLSX.utils.json_to_sheet(newTableRows);
 		const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
 		const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
 		const data = new Blob([excelBuffer], { type: fileType });
